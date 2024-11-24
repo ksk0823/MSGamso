@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 using Random = UnityEngine.Random;
@@ -29,13 +28,14 @@ public partial class Puzzle : MonoBehaviour
         public IReadOnlyList<InputType> Generated => generated;
 
         public int Index { get; private set; } = 0;
+        public int Count => generated.Count;
         public InputType? CurrentType => Index < generated.Count ? generated[Index] : null;
 
         public Sequence(int count)
         {
             for (int i = 0; i < count; i++)
             {
-                generated.Append((InputType)Random.Range(0, Enum.GetValues(typeof(InputType)).Length));
+                generated.Add((InputType)Random.Range(0, Enum.GetValues(typeof(InputType)).Length));
             }
         }
 
@@ -48,9 +48,11 @@ public partial class Puzzle : MonoBehaviour
                 // 성공했을 경우
                 if (HasPassed())
                 {
-                    OnPassed?.Invoke(sequence: this, index: Index);
+                    int index = Index;
 
                     Index += 1;
+
+                    OnPassed?.Invoke(sequence: this, index: index);
                 }
                 else
                 {
@@ -58,7 +60,7 @@ public partial class Puzzle : MonoBehaviour
                 }
             }
 
-            if (Index == generated.Count)
+            if (Index == Count)
             {
                 OnCleared?.Invoke();
             }
