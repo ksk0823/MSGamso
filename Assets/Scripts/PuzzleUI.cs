@@ -14,7 +14,6 @@ public class PuzzleUI : MonoBehaviour
     public SerializedDictionary<Puzzle.Sequence.InputType, Sprite> Images = new();
 
     [Header("UI")]
-    public TextMeshProUGUI TimeUI;
     public TextMeshProUGUI LevelUI;
     public RectTransform ImageUIGroup;
 
@@ -33,7 +32,6 @@ public class PuzzleUI : MonoBehaviour
 
     private void Update()
     {
-        TimeUI.text     = $"{ Puzzle.LeftTime.ToString(".00") }";
         LevelUI.text    = $"{ Puzzle.CurrentLevel + 1 }";
     }
 

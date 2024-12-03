@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 
 namespace inonego
@@ -15,29 +17,47 @@ public class Timer
 
 #endregion
 
-#region EventArgs
-
-    public struct StateChangedEventArgs
-    {
-        public State Previous;
-        public State Current;
-    }
-
-#endregion
-
 #region Events
 
-    public delegate void OnEndedEvent();
-    public delegate void OnStateChangedEvent(StateChangedEventArgs e);
+    public delegate void EventHandler();
+    public delegate void EventHandler<TEventArgs>(Timer sender, TEventArgs e);
 
-    /// <summary>
-    /// 타이머가 종료되었을때 호출되는 이벤트입니다.
-    /// </summary>
-    public event OnEndedEvent OnEnded;
+    [Flags]
+    private enum EventFlag
+    {
+        StateChanged    = 1 << 0,
+        Ended           = 1 << 1,
+    }
+
+    private class Event
+    {   
+        public EventFlag Flag;
+
+        public bool HasFlag(EventFlag eventFlag) => Flag.HasFlag(eventFlag);
+
+        public void Clear() => Flag = 0;
+    }
+
+    private Event @event;
+
+    #region EventArgs
+
+        public struct StateChangedEventArgs
+        {
+            public State Previous;
+            public State Current;
+        }
+
+    #endregion
+
     /// <summary>
     /// 상태가 변화되었을떼 호출되는 이벤트입니다.
     /// </summary>
-    public event OnStateChangedEvent OnStateChanged;
+    public event EventHandler<StateChangedEventArgs> OnStateChanged;
+    /// <summary>
+    /// 타이머가 종료되었을때 호출되는 이벤트입니다.
+    /// </summary>
+    public event EventHandler OnEnded;
 
 #endregion
 
@@ -48,22 +68,18 @@ public class Timer
     private float time      = 0f;
     private float current   = 0f;
 
-    public bool WasEndedThisFrame { get; private set; } = false;
-
     public float LeftTime       => current; 
     public float ElapsedTime    => time - current;
     public float LeftTime01     => LeftTime / time;
     public float ElapsedTime01  => ElapsedTime / time;
 
-    private void SetState(State state)
+    private State previous  = State.Stopped;
+
+    private void Clear()
     {
-        State previous = Current, current = state;
+        @event.Clear();
 
-        Current = current;
-
-        WasEndedThisFrame = false;
-
-        OnStateChanged?.Invoke(new StateChangedEventArgs { Previous = previous, Current = current });
+        previous = Current;
     }
     
     /// <summary>
@@ -71,8 +87,6 @@ public class Timer
     /// </summary>
     public void Update()
     {
-        WasEndedThisFrame = false;
-
         if (IsWorking)
         {
             current -= Time.deltaTime;
@@ -81,11 +95,28 @@ public class Timer
             {
                 Stop();
                 
-                WasEndedThisFrame = true;
-                
-                OnEnded?.Invoke();
+                @event.Flag |= EventFlag.Ended;
             }
         }
+
+        if (@event.HasFlag(EventFlag.StateChanged))
+        {
+            OnStateChanged?.Invoke(this, new StateChangedEventArgs { Previous = previous, Current = Current });
+        }
+
+        if (@event.HasFlag(EventFlag.Ended))
+        {
+            OnEnded?.Invoke();
+        }
+
+        Clear();
+    }
+
+    private void SetState(State state)
+    {
+        Current = state;
+
+        @event.Flag |= EventFlag.StateChanged;
     }
 
     /// <summary>

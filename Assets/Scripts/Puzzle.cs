@@ -28,28 +28,9 @@ public partial class Puzzle : MonoBehaviour
 
     public State CurrentState       { get; private set; } = State.Stop;
 
-    private Timer playTimer = new Timer();
-
-    public float ElapsedTime    => playTimer.ElapsedTime;
-    public float LeftTime       => playTimer.LeftTime;
-
-    private void Update()
-    {
-        playTimer.Update();
-
-        if (playTimer.WasEndedThisFrame)
-        {
-            OnEnded?.Invoke(clear: false);
-
-            Stop();
-        }
-    }
-
     public void Play(float time)
     {
         SetState(State.Play);
-
-        playTimer.Start(time);
 
         // 레벨 0부터 시작함
         if (0 < TotalLevel) SetLevel(0);
@@ -58,8 +39,6 @@ public partial class Puzzle : MonoBehaviour
     public void Stop()
     {
         SetState(State.Stop);
-
-        playTimer.Stop();
 
         CurrentLevel = 0;
         CurrentSequence = null;
