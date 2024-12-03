@@ -19,10 +19,9 @@ public partial class Puzzle : MonoBehaviour
     public event OnSequenceChangedEvent OnSequenceChanged;
     public event OnEndedEvent OnEnded;
 
-    public List<int> SequenceLengthOnEachLevel = new List<int>(); 
+    public List<int> SequenceLengthOnEachLevel = new(); 
 
     public int TotalLevel => SequenceLengthOnEachLevel.Count;
-
     public int CurrentLevel         { get; private set; } = 0;
 
     public Sequence CurrentSequence { get; private set; } = null;
@@ -109,5 +108,10 @@ public partial class Puzzle : MonoBehaviour
     public void ProcessInput(Sequence.InputType inputType)
     {
         CurrentSequence?.ProcessInput(inputType);
+    }
+
+    public void ProcessInput(int inputType)
+    {
+        CurrentSequence?.ProcessInput((Sequence.InputType)inputType);
     }
 }
