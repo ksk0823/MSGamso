@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using inonego;
+using UnityCommunity.UnitySingleton;
 using UnityEngine;
 
 /// <summary>
 /// 전체 게임의 상태와 진행을 관리합니다.
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : MonoSingleton<GameManager>
 {
     /// <summary>
     /// 실행 가능한 미니게임 목록입니다.
@@ -49,7 +50,10 @@ public class GameManager : MonoBehaviour
 
     private Timer gameTimer = new Timer();
 
-    private void Awake()
+    public float ElapsedTime => gameTimer.ElapsedTime;
+    public float LeftTime => gameTimer.LeftTime;
+
+    protected override void Awake()
     {
         gameTimer.OnEnded += OnGameTimerEnded;
     }

@@ -29,7 +29,14 @@ public class PuzzleUI : MonoBehaviour
 
     private void Update()
     {
-        LevelUI.text    = $"{ PuzzleMiniGame.CurrentLevel + 1 }";
+        if (PuzzleMiniGame.CurrentState == PuzzleMiniGame.State.Done)
+        {
+            LevelUI.text = "Done!";
+        }
+        else
+        {
+            LevelUI.text = $"{ PuzzleMiniGame.CurrentLevel + 1 }";
+        }
     }
 
     private void OnPuzzleSequenceChanged(PuzzleMiniGame.Sequence sequence)

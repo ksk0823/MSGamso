@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// 모든 미니게임의 기본 동작을 정의합니다.
@@ -16,6 +17,9 @@ public abstract class MiniGame : MonoBehaviour
 
     public event OnStateChangedEvent OnStateChanged;
     public event OnClearedEvent OnCleared;
+
+    [SerializeField]
+    private UnityEvent onCleared;
 
     /// <summary>
     /// 게임의 진행 상태를 나타냅니다.
@@ -68,5 +72,6 @@ public abstract class MiniGame : MonoBehaviour
         Stop();
 
         OnCleared?.Invoke();
+        onCleared?.Invoke();
     }
 }
