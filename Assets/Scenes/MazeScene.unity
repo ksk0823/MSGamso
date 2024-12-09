@@ -3727,19 +3727,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2418236679695196346, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
       propertyPath: ImageSettings._serializedList.Array.data[0].Value.Rotation
-      value: 135
-      objectReference: {fileID: 0}
-    - target: {fileID: 2418236679695196346, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
-      propertyPath: ImageSettings._serializedList.Array.data[1].Value.Rotation
       value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 2418236679695196346, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
+      propertyPath: ImageSettings._serializedList.Array.data[1].Value.Rotation
+      value: 135
+      objectReference: {fileID: 0}
+    - target: {fileID: 2418236679695196346, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
       propertyPath: ImageSettings._serializedList.Array.data[2].Value.Rotation
-      value: 215
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 2418236679695196346, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
       propertyPath: ImageSettings._serializedList.Array.data[3].Value.Rotation
-      value: 315
+      value: -135
       objectReference: {fileID: 0}
     - target: {fileID: 3069269684908778663, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
       propertyPath: LerpSpeed
@@ -36837,6 +36837,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig)
       objectReference: {fileID: 0}
+    - target: {fileID: 578625627478944732, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 578625627478944735, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -36876,30 +36880,6 @@ PrefabInstance:
     - target: {fileID: 578625627478944735, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2028095747601825270, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
-      propertyPath: m_AttachTransform
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2028095747601825270, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
-      propertyPath: m_RayOriginTransform
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2275282246573646205, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
-      propertyPath: m_AttachTransform
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2275282246573646205, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
-      propertyPath: m_RayOriginTransform
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5857748429054595771, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
-      propertyPath: m_RayInteractorChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6746190326359219856, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
-      propertyPath: m_RayInteractorChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

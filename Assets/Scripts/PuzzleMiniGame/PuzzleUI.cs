@@ -53,8 +53,8 @@ public class PuzzleUI : MonoBehaviour
         void OnSequencePassed(PuzzleMiniGame.Sequence sequence, int index)
         {
             for (int i = 0; i < imageUIs.Length; i++)
-            {
-                imageUIs[i].color   = i < sequence.Count && i >= sequence.Index ? Color.white : Color.clear;
+            {   
+                imageUIs[i].color   = i < sequence.Count && i >= sequence.Index ? ImageSettings[sequence.Generated[i]].Color : Color.clear;
             }
         }
 
@@ -65,7 +65,7 @@ public class PuzzleUI : MonoBehaviour
             imageUIs[i].gameObject.SetActive(i < sequence.Count);
             imageUIs[i].sprite  = i < sequence.Count ? ImageSettings[sequence.Generated[i]].Sprite : null;
             imageUIs[i].color   = i < sequence.Count ? ImageSettings[sequence.Generated[i]].Color : Color.clear;
-            imageUIs[i].transform.rotation = Quaternion.Euler(0, 0, ImageSettings[sequence.Generated[i]].Rotation);
+            imageUIs[i].transform.rotation = i < sequence.Count ? Quaternion.Euler(0, 0, ImageSettings[sequence.Generated[i]].Rotation) : Quaternion.identity;
         }
     }
 
