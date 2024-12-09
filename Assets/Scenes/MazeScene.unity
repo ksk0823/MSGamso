@@ -10421,7 +10421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3489279122360476993, guid: e35338327fec92e4eb8e487472928ef6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5498487187443542045, guid: e35338327fec92e4eb8e487472928ef6, type: 3}
       propertyPath: m_LocalScale.x
@@ -25875,8 +25875,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83e4e6cca11330d4088d729ab4fc9d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_StartingHoverFilters: []
-  m_StartingSelectFilters: []
 --- !u!4 &1385537404
 Transform:
   m_ObjectHideFlags: 0
@@ -31863,6 +31861,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1687927877}
   - component: {fileID: 1687927876}
+  - component: {fileID: 1687927878}
   m_Layer: 0
   m_Name: "\uAC8C\uC784 \uB9E4\uB2C8\uC800"
   m_TagString: Untagged
@@ -31902,6 +31901,19 @@ Transform:
   - {fileID: 47482185246894823}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1687927878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687927875}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee1c3227009aef34887c0ba319b80cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MiniGame: {fileID: 818161451}
 --- !u!1001 &1690001864
 PrefabInstance:
   m_ObjectHideFlags: 0

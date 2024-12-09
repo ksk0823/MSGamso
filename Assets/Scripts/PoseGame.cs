@@ -11,11 +11,8 @@ public class PoseGame : MiniGame
     public GameObject[] Walls;
     public Transform SpawnPosition;
 
+    private MoveWall moveWall;
 
-    private void OnDestroy()
-    {
-        MoveWall.OnWallDestroyed -= HandleWallDestroyed;
-    }
     public override void Play()
     {
         base.Play();
@@ -29,19 +26,21 @@ public class PoseGame : MiniGame
 
     public void MakePose()
     {
-        Instantiate(Walls[CurrentLevel], SpawnPosition.transform.position, Quaternion.Euler(-90, 90, 0));
+        moveWall = Instantiate(Walls[CurrentLevel], SpawnPosition.transform.position, Quaternion.Euler(-90, 90, 0)).GetComponent<MoveWall>();
+        moveWall.OnWallDestroyed += HandleWallDestroyed;
     }
 
     private void HandleWallDestroyed()
     {
-        if (CurrentLevel < 4)
+        if (CurrentLevel < Walls.Length - 1)
         {
             CurrentLevel++;
+
             MakePose();
         }
         else
         {
-            base.SetCleared();
+            SetCleared();
         }
     }
 
