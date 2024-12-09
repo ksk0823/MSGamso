@@ -9,6 +9,6 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        TimeText.text = $"{(int)GameManager.Instance.LeftTime / 60}:{(int)GameManager.Instance.LeftTime % 60}";
+        TimeText.text = $"{(int)GameManager.Instance.GameTime / 60}:{(int)GameManager.Instance.GameTime % 60}";
     }
 }

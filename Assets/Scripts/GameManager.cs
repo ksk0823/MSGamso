@@ -48,19 +48,15 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public float GameTime;
 
-    private Timer gameTimer = new Timer();
-
-    public float ElapsedTime => gameTimer.ElapsedTime;
-    public float LeftTime => gameTimer.LeftTime;
-
     protected override void Awake()
     {
-        gameTimer.OnEnded += OnGameTimerEnded;
+
     }
 
     private void Update()
     {
-        gameTimer.Update();
+        if(State.Running == CurrentState)
+            GameTime += Time.deltaTime;
     }
 
     private void SetState(State state)
@@ -78,8 +74,7 @@ public class GameManager : MonoSingleton<GameManager>
     public void Reset()
     {
         SetState(State.Idle);
-
-        gameTimer.Stop();
+        GameTime = 0;
     }
 
     /// <summary>
@@ -88,8 +83,6 @@ public class GameManager : MonoSingleton<GameManager>
     public void Play()
     {
         SetState(State.Running);
-
-        gameTimer.Start(GameTime);
     }
 
     /// <summary>
@@ -99,17 +92,12 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SetState(State.Done);
 
-        gameTimer.Stop();
     }
 
     #endregion
 
     #region Event Processing
-    
-    private void OnGameTimerEnded()
-    {
-        SetGameFailed();
-    }
+   
 
     /// <summary>
     /// 게임을 클리어한 것으로 설정합니다.
