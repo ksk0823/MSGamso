@@ -4,14 +4,23 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using AYellowpaper.SerializedCollections;
+using System;
 
 public class PuzzleUI : MonoBehaviour
 {
+    [Serializable]
+    public class ImageSetting
+    {
+        public Sprite Sprite;
+        public Color Color;
+        public float Rotation;
+    }
+
     [Header("General")]
     public PuzzleMiniGame PuzzleMiniGame;
 
     [Header("Image")]
-    public SerializedDictionary<PuzzleMiniGame.Sequence.InputType, Sprite> Images = new();
+    public SerializedDictionary<PuzzleMiniGame.Sequence.InputType, ImageSetting> ImageSettings = new();
 
     [Header("UI")]
     public TextMeshProUGUI LevelUI;
@@ -54,8 +63,9 @@ public class PuzzleUI : MonoBehaviour
         for (int i = 0; i < imageUIs.Length; i++)
         {
             imageUIs[i].gameObject.SetActive(i < sequence.Count);
-            imageUIs[i].sprite  = i < sequence.Count ? Images[sequence.Generated[i]] : null;
-            imageUIs[i].color   = i < sequence.Count ? Color.white : Color.clear;
+            imageUIs[i].sprite  = i < sequence.Count ? ImageSettings[sequence.Generated[i]].Sprite : null;
+            imageUIs[i].color   = i < sequence.Count ? ImageSettings[sequence.Generated[i]].Color : Color.clear;
+            imageUIs[i].transform.rotation = Quaternion.Euler(0, 0, ImageSettings[sequence.Generated[i]].Rotation);
         }
     }
 
