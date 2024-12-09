@@ -5,39 +5,34 @@ using UnityEngine;
 public class ButterflyGenerator : MonoBehaviour
 {
     public GameObject butterflyPrefab;
-    public int numberOfButterflies = 10;
+    //public int numberOfButterflies = 10;
     public Vector3 spawnAreaCenter = Vector3.zero;
     public Vector3 spawnAreaSize = new Vector3(20, 3, 20);
+    
 
-    void Start()
-    {
-        GenerateButterflies();
-    }
-
-    void GenerateButterflies()
+    public Butterfly GenerateButterfly()
     {
         if (butterflyPrefab == null)
         {
-            return;
+            return null;
         }
 
-        for (int i = 0; i < numberOfButterflies; i++)
+        Vector3 randomPosition = GetRandomPositionWithinArea();
+        GameObject butterfly = Instantiate(butterflyPrefab, randomPosition, Quaternion.identity);
+            
+        // 개별 나비에 로컬 이동 영역 설정
+        Butterfly butterflyScript = butterfly.GetComponent<Butterfly>();
+        if (butterflyScript != null)
         {
-            Vector3 randomPosition = GetRandomPositionWithinArea();
-            GameObject butterfly = Instantiate(butterflyPrefab, randomPosition, Quaternion.identity);
-            
-            // 개별 나비에 로컬 이동 영역 설정
-            Butterfly butterflyScript = butterfly.GetComponent<Butterfly>();
-            if (butterflyScript != null)
-            {
-                butterflyScript.areaCenter = transform.position; // Generator의 월드 좌표를 중심으로
-                butterflyScript.areaSize = spawnAreaSize;
-            }
-            
-            butterfly.transform.parent = transform;
-            butterfly.tag = "Butterfly"; // 태그 추가
-            Debug.Log($"Butterfly {i} 생성 완료 at {randomPosition}");
+            butterflyScript.areaCenter = transform.position; // Generator의 월드 좌표를 중심으로
+            butterflyScript.areaSize = spawnAreaSize;
         }
+            
+        butterfly.transform.parent = transform;
+        butterfly.tag = "Butterfly"; // 태그 추가
+        //Debug.Log($"Butterfly {i} 생성 완료 at {randomPosition}");
+        return butterflyScript;
+        
     }
 
     Vector3 GetRandomPositionWithinArea()

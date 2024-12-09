@@ -15,7 +15,7 @@ public class Butterfly : MonoBehaviour
     private Vector3 targetPosition;
     
     public delegate void ButterflyCaught();
-    public static event ButterflyCaught OnCaught;
+    public event ButterflyCaught OnCaught;
     
     // Start is called before the first frame update
     void Start()
