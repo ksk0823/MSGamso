@@ -8,6 +8,8 @@ public class CatchGame : MiniGame
     public int catchCount;
 
     public int score { get; private set; } = 0;
+    
+    [SerializeField]private GameObject racket;
 
     private List<Butterfly> butterflyList = new List<Butterfly>();
 
@@ -15,6 +17,9 @@ public class CatchGame : MiniGame
     // Start is called before the first frame update
     void Start()
     {
+        
+        racket.SetActive(false);
+        
         butterflyGenerator = GetComponent<ButterflyGenerator>();
     }
 
@@ -37,6 +42,9 @@ public class CatchGame : MiniGame
     public override void Play()
     {
         base.Play();
+        
+        
+        racket.SetActive(true);
 
         for (int i = 0; i < spawnCount; i++)
         {
@@ -57,9 +65,11 @@ public class CatchGame : MiniGame
 
         foreach (var butterfly in butterflyList)
         {
-            Destroy( butterfly );
+            if (butterfly != null)
+                Destroy( butterfly.gameObject );
         }
 
         butterflyList.Clear();
+        racket.SetActive(false);
     }
 }

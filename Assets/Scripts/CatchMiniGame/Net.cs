@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Net : MonoBehaviour
 {
+    
     void OnTriggerEnter(Collider other)
     {
         // 나비 태그 확인하고 잡기

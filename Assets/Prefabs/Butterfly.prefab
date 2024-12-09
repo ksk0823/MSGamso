@@ -997,8 +997,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   changeDirectionInterval: 3
-  areaCenter: {x: -10, y: 3, z: 15}
-  areaSize: {x: 20, y: 3, z: 20}
+  areaCenter: {x: 27, y: 3, z: 18}
+  areaSize: {x: 8, y: 3, z: 16}
 --- !u!135 &3400844496297827901
 SphereCollider:
   m_ObjectHideFlags: 0
