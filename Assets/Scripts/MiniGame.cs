@@ -19,6 +19,8 @@ public abstract class MiniGame : MonoBehaviour
     public event OnClearedEvent OnCleared;
 
     [SerializeField]
+    private UnityEvent onPlay;
+    [SerializeField]
     private UnityEvent onCleared;
 
     /// <summary>
@@ -54,6 +56,8 @@ public abstract class MiniGame : MonoBehaviour
     public virtual void Play()
     {
         SetState(State.Running);
+        
+        onPlay?.Invoke();
     }
 
     /// <summary>

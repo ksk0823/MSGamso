@@ -27,18 +27,14 @@ public class SwingingArmMotion : MonoBehaviour
     public float speed = 70;
     private float HandSpeed;
 
-    private Rigidbody rigidbody;
-
-    private void OnCollisionExit(Collision collision)
-    {
-        rigidbody.velocity = Vector3.zero;
-    }
+    private CharacterController characterController;
 
     private void Start()
     {
-        rigidbody = transform.GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
 
         PlayerPositionPreviousFrame = transform.localPosition;
+        
         PositionPreviousFrameLeftHand = LeftHand.transform.localPosition;
         PositionPreviousFrameRightHand = RightHand.transform.localPosition;
 
@@ -46,12 +42,12 @@ public class SwingingArmMotion : MonoBehaviour
         RotationPreviousFrameRightHand = RightHand.transform.localEulerAngles;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         float yRotation = CenterEyeCamera.transform.eulerAngles.y;
         ForwardDirection.transform.eulerAngles = new Vector3(0, yRotation, 0);        
 
-        // ÇöÀç ¿Þ¼Õ-¿À¸¥¼Õ ÄÁÆ®·Ñ·¯ÀÇ À§Ä¡
+        // í˜„ìž¬ ì™¼ì†-ì˜¤ë¥¸ì† ì»¨íŠ¸ë¡¤ëŸ¬ì˜ ìœ„ì¹˜
         PositionThisFrameLeftHand = LeftHand.transform.localPosition;
         PositionThisFrameRightHand = RightHand.transform.localPosition;
 
@@ -60,7 +56,7 @@ public class SwingingArmMotion : MonoBehaviour
         RotationThisFrameLeftHand = LeftHand.transform.localEulerAngles;
         RotationThisFrameRightHand = RightHand.transform.localEulerAngles;
 
-        // ÀÌÀü ¿Þ¼Õ-¿À¸¥¼Õ ÄÁÆ®·Ñ·¯ÀÇ À§Ä¡¿ÍÀÇ Â÷ÀÌ°ª °¡Á®¿À±â
+        // ì´ì „ ì™¼ì†-ì˜¤ë¥¸ì† ì»¨íŠ¸ë¡¤ëŸ¬ì˜ ìœ„ì¹˜ì™€ì˜ ì°¨ì´ê°’ ê°€ì ¸ì˜¤ê¸°
         var playerDistanceMoved = Vector3.Distance(PlayerPositionThisFrame, PlayerPositionPreviousFrame);
         var leftHandDistanceMoved = Vector3.Distance(PositionPreviousFrameLeftHand, PositionThisFrameLeftHand);
         var rightHandDistanceMoved = Vector3.Distance(PositionPreviousFrameRightHand, PositionThisFrameRightHand);
@@ -80,7 +76,7 @@ public class SwingingArmMotion : MonoBehaviour
         if (HandSpeed > 0.1f)
             HandSpeed = 0.1f;
 
-            transform.position += ForwardDirection.transform.forward.normalized * HandSpeed * speed;
+        characterController.Move(ForwardDirection.transform.forward.normalized * HandSpeed * speed);
 
         // transform.position += ForwardDirection.transform.forward * HandSpeed * speed * Time.deltaTime;
 

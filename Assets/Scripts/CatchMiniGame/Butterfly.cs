@@ -32,9 +32,21 @@ public class Butterfly : MonoBehaviour
     
     void SetRandomTargetPosition()
     {
-        float randomX = Random.Range(areaCenter.x - areaSize.x / 2, areaCenter.x + areaSize.x / 2);
-        float randomY = Random.Range(areaCenter.y - areaSize.y / 2, areaCenter.y + areaSize.y / 2);
-        float randomZ = Random.Range(areaCenter.z - areaSize.z / 2, areaCenter.z + areaSize.z / 2);
+        float randomX = Mathf.Clamp(
+            Random.Range(areaCenter.x - areaSize.x / 2, areaCenter.x + areaSize.x / 2),
+            areaCenter.x - areaSize.x / 2,
+            areaCenter.x + areaSize.x / 2
+        );
+        float randomY = Mathf.Clamp(
+            Random.Range(areaCenter.y - areaSize.y / 2, areaCenter.y + areaSize.y / 2),
+            areaCenter.y - areaSize.y / 2,
+            areaCenter.y + areaSize.y / 2
+        );
+        float randomZ = Mathf.Clamp(
+            Random.Range(areaCenter.z - areaSize.z / 2, areaCenter.z + areaSize.z / 2),
+            areaCenter.z - areaSize.z / 2,
+            areaCenter.z + areaSize.z / 2
+        );
 
         targetPosition = new Vector3(randomX, randomY, randomZ);
     }

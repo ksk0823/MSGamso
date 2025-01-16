@@ -24,7 +24,7 @@ public class ButterflyGenerator : MonoBehaviour
         Butterfly butterflyScript = butterfly.GetComponent<Butterfly>();
         if (butterflyScript != null)
         {
-            butterflyScript.areaCenter = transform.position; // Generator의 월드 좌표를 중심으로
+            butterflyScript.areaCenter = spawnAreaCenter; // Generator의 월드 좌표를 중심으로
             butterflyScript.areaSize = spawnAreaSize;
         }
             
