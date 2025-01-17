@@ -6,6 +6,13 @@ using UnityEngine;
 
 public class PoseGame : MiniGame
 {
+    public Camera poseCamera;
+    public Camera wallCamera;
+    
+    [Header("카메라 머티리얼 설정")]
+    public Material poseCameraMaterial;
+    public Material wallCameraMaterial;
+
     public int CurrentLevel = 0;
     public int Success = 0;
     public GameObject[] Walls;
@@ -13,6 +20,18 @@ public class PoseGame : MiniGame
 
     private MoveWall moveWall;
 
+    private void Start()
+    {
+        if (poseCamera != null && poseCameraMaterial != null)
+        {
+            poseCamera.SetReplacementShader(poseCameraMaterial.shader, "RenderType");
+        }
+
+        if (wallCamera != null && wallCameraMaterial != null)
+        {
+            wallCamera.SetReplacementShader(wallCameraMaterial.shader, "RenderType");
+        }
+    }
     public override void Play()
     {
         base.Play();
@@ -43,5 +62,4 @@ public class PoseGame : MiniGame
             SetCleared();
         }
     }
-
 }
