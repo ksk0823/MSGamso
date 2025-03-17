@@ -25,13 +25,20 @@ public class SwingingArmMotion : MonoBehaviour
     private Vector3 RotationThisFrameRightHand;
 
     public float speed = 70;
-    private float HandSpeed;
+    [SerializeField] float HandSpeed;
 
     private CharacterController characterController;
+
+    public GameObject character;
+    public GameObject rightLeg;
+    public GameObject leftLeg;
+    private Animator characterAnimator;
 
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
+
+        characterAnimator = character.GetComponent<Animator>();
 
         PlayerPositionPreviousFrame = transform.localPosition;
         
@@ -75,11 +82,19 @@ public class SwingingArmMotion : MonoBehaviour
 
         if (HandSpeed > 0.1f)
             HandSpeed = 0.1f;
-
-        characterController.Move(ForwardDirection.transform.forward.normalized * HandSpeed * speed);
-
+        if (HandSpeed > 0.05f)
+        {
+            rightLeg.SetActive(false);
+            leftLeg.SetActive(false);
+            characterController.Move(ForwardDirection.transform.forward.normalized * HandSpeed * speed);
+            characterAnimator.SetTrigger("Walking");
+        }
+        else
+        {
+            rightLeg.SetActive(true);
+            leftLeg.SetActive(true);
+        }
         // transform.position += ForwardDirection.transform.forward * HandSpeed * speed * Time.deltaTime;
-
         PositionPreviousFrameLeftHand = PositionThisFrameLeftHand;
         PositionPreviousFrameRightHand = PositionThisFrameRightHand;
 
