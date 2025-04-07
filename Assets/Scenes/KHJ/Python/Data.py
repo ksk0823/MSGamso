@@ -1,56 +1,9 @@
-import json
 import threading
 from collections import deque
 from dataclasses import dataclass
 from typing import Dict, Any
 
-# ================================================================
-# 위치를 표현하는 구조체입니다. (Vector3에 해당)
-# ================================================================
-@dataclass
-class Vector3:
-    x: float = 0.0
-    y: float = 0.0
-    z: float = 0.0
-    
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]):
-        if data is None:
-            return cls()
-            
-        return cls(
-            x=float(data.get('x', 0.0)),
-            y=float(data.get('y', 0.0)),
-            z=float(data.get('z', 0.0))
-        )
-
-
-# ================================================================
-# 회전을 표현하는 구조체입니다. (Quaternion에 해당)
-# ================================================================
-@dataclass
-class Quaternion:
-    x: float = 0.0
-    y: float = 0.0
-    z: float = 0.0
-    w: float = 1.0
-    
-    @classmethod
-    def identity(cls):
-        return cls(0.0, 0.0, 0.0, 1.0)
-    
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]):
-        if data is None:
-            return cls.identity()
-            
-        return cls(
-            x=float(data.get('x', 0.0)),
-            y=float(data.get('y', 0.0)),
-            z=float(data.get('z', 0.0)),
-            w=float(data.get('w', 1.0))
-        )
-
+from Transform import Vector3, Quaternion
 
 # ================================================================
 # 위치와 회전을 표현하는 구조체입니다.
@@ -146,52 +99,120 @@ class PoseSnapshot:
         
         return cls(pose, timestamp)
 
+# ================================================================
+# 처리된 데이터를 저장하는 구조체입니다.
+# ================================================================
+@dataclass
+class ProcessedData:
+    HMDVelocity: Vector3 = None
+    LVelocity: Vector3 = None
+    RVelocity: Vector3 = None
+    DeltaTime: float = 0.0
+    TimeStamp: float = 0.0
 
 # ================================================================
-# 데이터 관리 및 저장을 담당하는 클래스
-# TCP 서버로부터 받은 VR 기기 데이터를 관리하고 저장
+# 데이터 관리 및 저장을 담당하는 큐 클래스
 # ================================================================
-class DataManager:
+class ProcessedDataQueue:
     
     # ----------------------------------------------------------------
     # 데이터 관리자 초기화
     # 데이터 저장소와 스레드 안전을 위한 락 설정
     # ----------------------------------------------------------------
-    def __init__(self, max_data_points=100):
+    def __init__(self):
         # 데이터 저장소 초기화
-        self.data = deque(maxlen=max_data_points)
+        self.data : deque[ProcessedData] = deque()
+        
+        # 마지막 스냅샷 저장
+        self.last_snapshot : PoseSnapshot = None
         
         # 스레드 안전 관리
         self.lock = threading.Lock()
     
     # ----------------------------------------------------------------
     # 데이터 추가
-    # 수신된 데이터를 스레드 안전하게 저장소에 추가
+    # 데이터를 저장소에 추가
     # ----------------------------------------------------------------
-    def add_data(self, data):
+    def enqueue(self, data):
         with self.lock:
             self.data.append(data)
     
     # ----------------------------------------------------------------
-    # 데이터 접근
-    # 저장된 데이터를 리스트 형태로 반환
+    # 데이터 제거
+    # 저장소의 마지막 데이터를 제거
     # ----------------------------------------------------------------
-    def get_data(self):
+    def dequeue(self):
         with self.lock:
-            return list(self.data)
+            return self.data.popleft()
     
+    # ----------------------------------------------------------------
+    # 가장 최신 데이터 가져오기
+    # 데이터를 제거하지 않고 가장 최근에 추가된 데이터 반환
+    # ----------------------------------------------------------------
+    def latest(self):
+        with self.lock:
+            if len(self.data) == 0:
+                return None
+            return self.data[-1]
+        
     # ----------------------------------------------------------------
     # 데이터 존재 여부 확인
-    # 저장소에 데이터가 있는지 확인
+    # 저장소에 데이터가 비어있는지 확인
     # ----------------------------------------------------------------
-    def has_data(self):
+    def empty(self):
         with self.lock:
-            return len(self.data) > 0
+            return len(self.data) == 0
     
     # ----------------------------------------------------------------
-    # 모든 데이터 삭제
-    # 저장소의 모든 데이터를 안전하게 삭제
+    # 모든 데이터 제거
+    # 저장소의 모든 데이터를 제거
     # ----------------------------------------------------------------
-    def clear_data(self):
+    def clear(self):
         with self.lock:
             self.data.clear()
+            
+            self.last_snapshot = None
+
+    # ----------------------------------------------------------------
+    # 데이터 처리
+    # ----------------------------------------------------------------
+    def process(self, json_data: dict):
+        with self.lock:
+            try:
+                # PoseSnapshot으로 변환
+                snapshot = PoseSnapshot.from_dict(json_data)
+                
+                # 속도 계산을 위한 변수 초기화
+                hmd_velocity = Vector3(x=0, y=0, z=0)
+                lcon_velocity = Vector3(x=0, y=0, z=0)
+                rcon_velocity = Vector3(x=0, y=0, z=0)
+                delta_time = 0.0
+                
+                # 이전 스냅샷이 있는 경우 속도 계산
+                if self.last_snapshot is not None:
+                    delta_time = snapshot.TimeStamp - self.last_snapshot.TimeStamp
+                    
+                    (pose, last_pose) = (snapshot.Pose, self.last_snapshot.Pose)
+
+                    if delta_time > 0:
+                        # 속도 계산 (현재 위치 - 이전 위치) / 시간
+                        hmd_velocity = (pose.HMD.Position - last_pose.HMD.Position) / delta_time
+                        lcon_velocity = (pose.LController.Position - last_pose.LController.Position) / delta_time
+                        rcon_velocity = (pose.RController.Position - last_pose.RController.Position) / delta_time
+                
+                # ProcessedData 객체 생성 및 저장
+                processed_data = ProcessedData(
+                    HMDVelocity=hmd_velocity,
+                    LVelocity=lcon_velocity,
+                    RVelocity=rcon_velocity,
+                    DeltaTime=delta_time,
+                    TimeStamp=snapshot.TimeStamp
+                )
+                
+                # 데이터 저장
+                self.data.append(processed_data)
+                
+                # 현재 스냅샷을 마지막 스냅샷으로 저장
+                self.last_snapshot = snapshot
+            except Exception as e:
+                print(f"스냅샷 변환 오류: {e}")
