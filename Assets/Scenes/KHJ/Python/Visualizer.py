@@ -39,18 +39,9 @@ class AxisGraph2D:
         self.times : deque[float] = deque(maxlen=max_data_points)
         self.values : deque[float] = deque(maxlen=max_data_points)
         
-        # 축 기본 설정
-        self.ax.set_xlabel('시간 (초)')
-        
-        # 그래프 유형에 따른 레이블 설정
-        if graph_type == 'velocity':
-            self.ax.set_ylabel('속도 (m/s)')
-            self.ax.set_title(f"{title} 속도", fontsize=10)
-        else:
-            self.ax.set_ylabel('위치 (m)')
-            self.ax.set_title(f"{title} 위치", fontsize=10)
+        # 축 라벨 설정
+        self._setup_labels()
             
-        self.ax.grid(True, alpha=0.3)
         self.line, = self.ax.plot([], [], color=self.color, label=self.name, linewidth=1.5)
         self.ax.legend(loc='upper right', fontsize=8)
         
@@ -59,6 +50,23 @@ class AxisGraph2D:
                     transform=self.ax.transAxes, fontsize=8,
                     verticalalignment='top', 
                     bbox={'facecolor': 'white', 'alpha': 0.7, 'pad': 3})
+    
+    # ----------------------------------------------------------------
+    # 축 라벨 및 포맷터 설정
+    # ----------------------------------------------------------------
+    def _setup_labels(self):
+        # 그래프 유형에 따른 제목만 설정
+        if self.graph_type == 'velocity':
+            self.ax.set_title(f"{self.title} 속도", fontsize=10)
+        else:
+            self.ax.set_title(f"{self.title} 위치", fontsize=10)
+            
+        # 격자 설정
+        self.ax.grid(True, alpha=0.3)
+        
+        # 축의 눈금 숫자 제거
+        self.ax.set_xticklabels([])
+        self.ax.set_yticklabels([])
     
     # ----------------------------------------------------------------
     # 데이터 및 시간 추가
@@ -252,11 +260,24 @@ class TkinterApp:
             if interval >= 10: 
                 self.update_interval = interval
                 
-                # 애니메이션이 실행 중이면 간격 업데이트
-                if self.animation is not None and hasattr(self.animation, 'event_source'):
-                    self.animation.event_source.interval = self.update_interval
+                # 애니메이션이 실행 중이면 재시작하여 새 간격 적용
+                if self.running:
+                    # 현재 상태 저장
+                    was_running = self.running
+                    
+                    # 시각화 중지
+                    self.stop_visualization()
+                    
+                    # 시각화 재시작 (새 간격으로)
+                    self.start_visualization()
+                    
+                    # 버튼 텍스트 다시 설정
+                    if was_running:
+                        self.start_button.config(text="시각화 정지")
                 
-            print(f"설정 적용됨: 업데이트 주기 = {self.update_interval}ms")
+                print(f"설정 적용됨: 업데이트 주기 = {self.update_interval}ms")
+            else:
+                print(f"업데이트 주기는 10ms 이상이어야 합니다.")
         except ValueError:
             print("잘못된 설정 값입니다.")
     
@@ -290,7 +311,7 @@ class TkinterApp:
                 
             try:
                 # 데이터 업데이트
-                self.visualizer.update()
+                updated = self.visualizer.update()
                 
                 # 그래프 업데이트 및 아티스트 반환
                 artists = self.visualizer.update_tkinter_graphs()
@@ -300,14 +321,16 @@ class TkinterApp:
                 return artists
             except Exception as e:
                 print(f"애니메이션 업데이트 오류: {e}")
+                import traceback
+                traceback.print_exc()
                 return []
         
-        # 애니메이션 생성
+        # 애니메이션 생성 - blit 모드 활성화
         self.animation = FuncAnimation(
             self.fig, 
             update_animation, 
             interval=self.update_interval,
-            blit=True,
+            blit=True,  # blit 모드 활성화
             cache_frame_data=False
         )
         
@@ -356,7 +379,7 @@ class DataVisualizer:
         self.data_queue = data_queue
         
         # 데이터 저장소
-        self.max_data_points = 100
+        self.max_data_points = 50
         
         # 장치별 그래프 객체 생성 (속도 데이터 시각화용)
         self.hmd = VectorGraph2D("HMD", 'velocity', self.max_data_points)
