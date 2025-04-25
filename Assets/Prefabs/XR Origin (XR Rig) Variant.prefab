@@ -719,7 +719,15 @@ MonoBehaviour:
   CenterEyeCamera: {fileID: 2292567932104716928}
   ForwardDirection: {fileID: 7957912964984566853}
   speed: 1.5
+  HandSpeed: 0
   character: {fileID: 0}
+  rightLeg: {fileID: 0}
+  leftLeg: {fileID: 0}
+  leftShoulder: {fileID: 0}
+  rightShoulder: {fileID: 0}
+  rootJoint: {fileID: 0}
+  walkThreshold: 0.05
+  runThreshold: 0.08
 --- !u!114 &2028095747601825270 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 285389467476424711, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}

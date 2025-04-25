@@ -1314,6 +1314,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bdd66c8424f83143b4e3de24511cbc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onPlay:
+    m_PersistentCalls:
+      m_Calls: []
   onCleared:
     m_PersistentCalls:
       m_Calls:
