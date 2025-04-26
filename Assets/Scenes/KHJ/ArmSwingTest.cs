@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+// ================================================================
+// ArmSwingProcessor를 사용하고 테스트하기 위한 컴포넌트
+// ================================================================
 public class ArmSwingTest : MonoBehaviour
 {
     [field: SerializeField]
@@ -13,14 +20,12 @@ public class ArmSwingTest : MonoBehaviour
     private void Awake()
     {
         Processor.OnPoseSnapshotEnqueued += OnPoseSnapshotEnqueued;
-
         Processor.Initialize();
     }
 
     private void OnDestroy()
     {
         Processor.OnPoseSnapshotEnqueued -= OnPoseSnapshotEnqueued;
-
         Processor.CleanUp();
     }
 
@@ -29,8 +34,8 @@ public class ArmSwingTest : MonoBehaviour
         Processor.Update();
     }
 
-    private void OnPoseSnapshotEnqueued(PoseSnapshot poseSnapshot)
+    private void OnPoseSnapshotEnqueued(PoseSnapshot snapshot)
     {
-        Communicator.Send(poseSnapshot);
+        // Communicator.Send(snapshot);
     }
 }
