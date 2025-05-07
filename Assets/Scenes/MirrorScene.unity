@@ -4299,7 +4299,7 @@ PrefabInstance:
     - target: {fileID: 6968801818967122704, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: leftFoot
       value: 
-      objectReference: {fileID: 2017774657}
+      objectReference: {fileID: 704452188}
     - target: {fileID: 6968801818967122704, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: rightLeg
       value: 
@@ -4319,7 +4319,7 @@ PrefabInstance:
     - target: {fileID: 6968801818967122704, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: rightFoot
       value: 
-      objectReference: {fileID: 1180956225}
+      objectReference: {fileID: 704452189}
     - target: {fileID: 6968801818967122704, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: rootJoint
       value: 
@@ -24525,6 +24525,28 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2480291907970807458, guid: 3d0a8c12346faa647b0bfe810235bdd7, type: 3}
   m_PrefabInstance: {fileID: 704452183}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &704452188 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5172905511061869122, guid: 3d0a8c12346faa647b0bfe810235bdd7, type: 3}
+  m_PrefabInstance: {fileID: 704452183}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704452186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a8098103f299b44be14d0de50e7fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &704452189 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3639135405572729738, guid: 3d0a8c12346faa647b0bfe810235bdd7, type: 3}
+  m_PrefabInstance: {fileID: 704452183}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704452187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a8098103f299b44be14d0de50e7fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &706143896 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1772748431129205581, guid: 9610a7327de068a40af53678740cc5bc, type: 3}
@@ -68600,11 +68622,6 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1772748431129205581, guid: 9610a7327de068a40af53678740cc5bc, type: 3}
   m_PrefabInstance: {fileID: 1798682354}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2017774657 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1213125402165794913, guid: 3d0a8c12346faa647b0bfe810235bdd7, type: 3}
-  m_PrefabInstance: {fileID: 704452183}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2019209476 stripped
 Transform:

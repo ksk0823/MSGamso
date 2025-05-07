@@ -10,7 +10,7 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private GameObject CenterEyeCamera;
     [SerializeField] private GameObject ForwardDirection;
 
-    // 어깨와 루트 조인트 참조
+    [Header("어깨와 루트 조인트 참조")]
     [SerializeField] private Transform leftShoulder;
     [SerializeField] private Transform rightShoulder;
     [SerializeField] private Transform rootJoint;
@@ -26,31 +26,32 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private float stabilizationTime;
     private bool isStabilized = false;
 
-    // 이동 관련 변수
+    [Header("이동 관련 변수")]
     [SerializeField] private float Weight = 0f;
     [SerializeField] private float baseSpeed;
 
-    // 상태 판별 임계값
+    [Header("상태 판별 임계값")]
     [SerializeField] private float walkThreshold;
     [SerializeField] private float runThreshold;
     [SerializeField] private float minHandMovementThreshold;
 
-    // Weight 감소값
+    [Header("Weight 감소값")]
     [SerializeField] private float normalSubtraction;
     [SerializeField] private float walkSubtraction;
     [SerializeField] private float runSubtraction;
 
-    // 비선형 함수 G(x)의 계수
+    [Header("비선형 함수 G(x)의 계수")]
     [SerializeField] private float filterStrength;
 
     private CharacterController characterController;
 
+    [Header("캐릭터")]
     [SerializeField] private GameObject character;
-    [SerializeField] private GameObject rightLeg;
-    [SerializeField] private GameObject leftLeg;
+    [SerializeField] private IKFootSolver rightFoot;
+    [SerializeField] private IKFootSolver leftFoot;
     private Animator characterAnimator;
 
-    // 애니메이션 제어 변수
+    [Header("애니메이션 제어 변수")]
     [SerializeField] private string walkAnimParam = "isWalking";
     [SerializeField] private string runAnimParam = "isRunning";
     [SerializeField] private int lowerBodyLayer = 1; // 하체 애니메이션 레이어 인덱스
@@ -59,6 +60,7 @@ public class SwingingArmMotion : MonoBehaviour
     private enum MovementState { Idle, Walking, Running }
     private MovementState currentState = MovementState.Idle;
 
+    public bool IsMoving {get; private set;} = false;
 
     private void Start()
     {
@@ -102,8 +104,7 @@ public class SwingingArmMotion : MonoBehaviour
             // 안정화 중에는 어떤 이동도 허용하지 않음
             Weight = 0f;
             // IK 활성화 (정지 상태)
-            rightLeg.SetActive(true);
-            leftLeg.SetActive(true);
+            SetMoving(false);
             UpdateAnimationState(MovementState.Idle);
             return;
         }
@@ -224,8 +225,7 @@ public class SwingingArmMotion : MonoBehaviour
             UpdateAnimationState(MovementState.Running);
             
             // IK 비활성화 (다리는 애니메이션만으로 제어)
-            rightLeg.SetActive(false);
-            leftLeg.SetActive(false);
+            SetMoving(false);
             
             Weight -= runSubtraction * Time.deltaTime;
         }
@@ -236,8 +236,7 @@ public class SwingingArmMotion : MonoBehaviour
             UpdateAnimationState(MovementState.Walking);
             
             // IK 비활성화 (다리는 애니메이션만으로 제어)
-            rightLeg.SetActive(false);
-            leftLeg.SetActive(false);
+            SetMoving(false);
             
             Weight -= walkSubtraction * Time.deltaTime;
         }
@@ -247,8 +246,7 @@ public class SwingingArmMotion : MonoBehaviour
             UpdateAnimationState(MovementState.Idle);
             
             // IK 활성화 (다리 IK 제어)
-            rightLeg.SetActive(true);
-            leftLeg.SetActive(true);
+            SetMoving(true);
             
             // Weight가 매우 작으면 완전히 0으로 설정
             if (Weight < 0.01f) 
@@ -305,5 +303,19 @@ public class SwingingArmMotion : MonoBehaviour
         Debug.Log("newState : " + newState + "Weight : " + Weight);
         // 현재 상태 업데이트
         currentState = newState;
+    }
+
+    public void SetMoving(bool value)
+    {
+        if (value != IsMoving)
+        {
+            rightFoot.ResetPosition();
+            leftFoot.ResetPosition();
+        }
+
+        IsMoving = value;
+        
+        rightFoot.enabled = value;
+        leftFoot.enabled = value;
     }
 }

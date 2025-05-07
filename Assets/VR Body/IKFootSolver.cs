@@ -30,10 +30,7 @@ public class IKFootSolver : MonoBehaviour
 
     private void Start()
     {
-        footSpacing = transform.localPosition.x;
-        currentPosition = newPosition = oldPosition = transform.position;
-        currentNormal = newNormal = oldNormal = transform.up;
-        lerp = 1;
+        ResetPosition();
     }
 
     // Update is called once per frame
@@ -102,6 +99,12 @@ public class IKFootSolver : MonoBehaviour
         return lerp < 1;
     }
 
-
+    public void ResetPosition()
+    {
+        footSpacing = transform.localPosition.x;
+        currentPosition = newPosition = oldPosition = transform.position;
+        currentNormal = newNormal = oldNormal = transform.up;
+        lerp = 1;
+    }
 
 }
