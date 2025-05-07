@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SwingingArmMotion : MonoBehaviour
 {
@@ -15,12 +12,6 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private Transform rightShoulder;
     [SerializeField] private Transform rootJoint;
 
-    // 이전 프레임의 위치 저장
-    private Vector3 LPast;
-    private Vector3 RPast;
-    private Vector3 PlayerPositionPreviousFrame;
-    private Vector3 PlayerPositionThisFrame;
-    
     // 안정화를 위한 타이머
     private float stabilizationTimer = 0f;
     [SerializeField] private float stabilizationTime;
@@ -56,17 +47,46 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private string runAnimParam = "isRunning";
     [SerializeField] private int lowerBodyLayer = 1; // 하체 애니메이션 레이어 인덱스
 
+#region 이동 관련 상태 변수
+    
+    // 이전 프레임의 위치 저장
+    private Vector3 LPast;
+    private Vector3 RPast;
+    private Vector3 PlayerPositionPreviousFrame;
+    private Vector3 PlayerPositionThisFrame;
+
+    // 현재 위치 가져오기
+    private (Vector3 L, Vector3 R) Current => 
+    (
+        LeftHand.transform.position, RightHand.transform.position
+    );
+    
+    private (Vector3 L, Vector3 R) Direction => 
+    (
+        (Current.L - leftShoulder.position).normalized, (Current.R - rightShoulder.position).normalized
+    );
+
+#endregion
+
     // 현재 이동 상태
     private enum MovementState { Idle, Walking, Running }
     private MovementState currentState = MovementState.Idle;
 
     public bool IsMoving {get; private set;} = false;
 
-    private void Start()
+    private void Awake()
+    {
+        GetComponents();
+    }
+
+    private void GetComponents()
     {
         characterController = GetComponent<CharacterController>();
         characterAnimator = character.GetComponent<Animator>();
+    }
 
+    private void Start()
+    {
         // 애니메이션 레이어 가중치 초기화
         characterAnimator.SetLayerWeight(lowerBodyLayer, 1f);
         
@@ -75,62 +95,145 @@ public class SwingingArmMotion : MonoBehaviour
         characterAnimator.SetBool(runAnimParam, false);
 
         // 초기 위치 설정
-        PlayerPositionPreviousFrame = transform.localPosition;
-        PlayerPositionThisFrame = transform.localPosition;
-        LPast = LeftHand.transform.position;
-        RPast = RightHand.transform.position;
+        ResetPosition();
 
         stabilizationTimer = 0f;
+
         isStabilized = false;
     }
 
     private void FixedUpdate()
     {
-        // 시작 시 안정화 시간 부여
-        if (!isStabilized)
+        // 시작 시 안정화 처리
+        if (!HandleStabilization())
         {
-            stabilizationTimer += Time.deltaTime;
-            if (stabilizationTimer >= stabilizationTime)
-            {
-                isStabilized = true;
-                // 안정화 완료 후 현재 위치를 기준점으로 다시 설정
-                LPast = LeftHand.transform.position;
-                RPast = RightHand.transform.position;
-                PlayerPositionPreviousFrame = transform.localPosition;
-                PlayerPositionThisFrame = transform.localPosition;
-                Weight = 0f; // 안정화 후에도 Weight를 0으로 설정
-            }
-            
-            // 안정화 중에는 어떤 이동도 허용하지 않음
-            Weight = 0f;
-            // IK 활성화 (정지 상태)
-            SetMoving(false);
-            UpdateAnimationState(MovementState.Idle);
             return;
         }
         
         // 카메라 방향에 따라 이동 방향 조정
-        float yRotation = CenterEyeCamera.transform.eulerAngles.y;
-        ForwardDirection.transform.eulerAngles = new Vector3(0, yRotation, 0);        
+        UpdateForwardDirection();
 
-        // 현재 위치 가져오기
-        Vector3 LCurrent = LeftHand.transform.position;
-        Vector3 RCurrent = RightHand.transform.position;
         PlayerPositionThisFrame = transform.localPosition;
 
+        // 움직임 계산 및 Weight 업데이트
+        CalculateMovementAndUpdateWeight();
+
+        // 이동 및 애니메이션 상태 설정
+        ApplyMovementBasedOnWeight();
+
+        // 다음 프레임을 위해 현재 위치 저장
+        LPast = LeftHand.transform.position;
+        RPast = RightHand.transform.position;
+
+        PlayerPositionPreviousFrame = PlayerPositionThisFrame;
+    }
+
+    //============================================================
+    // <summary>
+    // 위치 초기화
+    // </summary>
+    //============================================================
+    private void ResetPosition()
+    {
+        PlayerPositionPreviousFrame = PlayerPositionThisFrame = transform.localPosition;
+
+        LPast = LeftHand.transform.position;
+        RPast = RightHand.transform.position;
+    }
+
+    //============================================================
+    // <summary>
+    // 안정화 처리를 담당하는 메서드
+    // </summary>
+    //============================================================
+    private bool HandleStabilization()
+    {
+        if (!isStabilized)
+        {
+            stabilizationTimer += Time.deltaTime;
+
+            if (stabilizationTimer >= stabilizationTime)
+            {
+                isStabilized = true;
+
+                ResetPosition();
+                
+                // 안정화 후에도 Weight를 0으로 설정
+                Weight = 0f;
+            }
+            
+            // 안정화 중에는 어떤 이동도 허용하지 않음
+            Weight = 0f;
+
+            // IK 활성화 (정지 상태)
+            SetMoving(false);
+
+            UpdateAnimationState(MovementState.Idle);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    //============================================================
+    // <summary>
+    // 카메라 방향을 기반으로 이동 방향 업데이트
+    // </summary>
+    //============================================================
+    private void UpdateForwardDirection()
+    {
+        float yRotation = CenterEyeCamera.transform.eulerAngles.y;
+        ForwardDirection.transform.eulerAngles = new Vector3(0, yRotation, 0);
+    }
+
+    //============================================================
+    // <summary>
+    // 움직임 계산 및 Weight 업데이트
+    // </summary>
+    //============================================================
+    private void CalculateMovementAndUpdateWeight()
+    {
         // 1. 어깨와 루트로 평면 생성 (RP)
-        Vector3 RPN = Vector3.Cross(
-            (rightShoulder.position - rootJoint.position),
-            (leftShoulder.position - rootJoint.position)
-        ).normalized;
+        Vector3 RPN = CalculateReferentialPlaneNormal();
 
-        // 2. 손-어깨 직선 구하기 (DL, DR)
-        Vector3 DL = (LCurrent - leftShoulder.position).normalized;
-        Vector3 DR = (RCurrent - rightShoulder.position).normalized;
+        // 팔의 방향 벡터 계산 및 이동 방향 업데이트
+        UpdateMovement(Current.L, Current.R);
 
-        // 팔의 방향 벡터 계산 (양손의 평균 방향)
-        Vector3 armDirection = ((LCurrent - leftShoulder.position) + (RCurrent - rightShoulder.position)).normalized;
-        
+        // 4. 비선형 필터링 값 계산 G(sin(θ))
+        float LF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, Direction.L) * Mathf.Deg2Rad));
+        float RF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, Direction.R) * Mathf.Deg2Rad));
+
+        // 5. 이동량 계산
+        float DifL = Vector3.Distance(LPast, Current.L) * LF;
+        float DifR = Vector3.Distance(RPast, Current.R) * RF;
+
+        UpdateWeight(DifL, DifR);
+    }
+
+    //============================================================
+    // <summary>
+    // 어깨와 루트로 기준면의 법선 벡터 계산
+    // </summary>
+    //============================================================
+    private Vector3 CalculateReferentialPlaneNormal()
+    {
+        Vector3 rightShoulderToRoot = rightShoulder.position - rootJoint.position;
+        Vector3 leftShoulderToRoot = leftShoulder.position - rootJoint.position;
+
+        return Vector3.Cross(rightShoulderToRoot, leftShoulderToRoot).normalized;
+    }
+
+    //============================================================
+    // <summary>
+    // 이동 방향 업데이트
+    // </summary>
+    //============================================================
+    private void UpdateMovement(Vector3 LCurrent, Vector3 RCurrent)
+    {
+        // 팔의 방향 벡터 계산
+        Vector3 armDirection = (Direction.L + Direction.R).normalized;
+
         // 원래 팔 방향 저장 (수직 성분 포함)
         Vector3 originalArmDirection = armDirection;
         
@@ -183,15 +286,15 @@ public class SwingingArmMotion : MonoBehaviour
                 ForwardDirection.transform.forward = modifiedDirection;
             }
         }
+    }
 
-        // 4. 비선형 필터링 값 계산 G(sin(θ))
-        float LF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, DL) * Mathf.Deg2Rad));
-        float RF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, DR) * Mathf.Deg2Rad));
-
-        // 5. 이동량 계산
-        float DifL = Vector3.Distance(LPast, LCurrent) * LF;
-        float DifR = Vector3.Distance(RPast, RCurrent) * RF;
-
+    //============================================================
+    // <summary>
+    // Weight 값 업데이트
+    // </summary>
+    //============================================================
+    private void UpdateWeight(float DifL, float DifR)
+    {
         // 최소 움직임 임계값 적용 - 임계값 증가
         float minThreshold = minHandMovementThreshold * 2f; // 더 높은 임계값 적용
         DifL = DifL > minThreshold ? DifL : 0;
@@ -216,8 +319,16 @@ public class SwingingArmMotion : MonoBehaviour
 
         // 최대 Weight 제한
         Weight = Mathf.Min(Weight, 1f);
+    }
 
-        // 6. 상태 판별 및 이동
+    //============================================================
+    // <summary>
+    // Weight에 따라 이동 및 애니메이션 상태 적용
+    // </summary>
+    //============================================================
+    private void ApplyMovementBasedOnWeight()
+    {
+        // 상태 판별 및 이동
         if (Weight > runThreshold)
         {
             // 뛰기 상태
@@ -261,11 +372,6 @@ public class SwingingArmMotion : MonoBehaviour
 
         // Weight가 음수가 되지 않도록 조정
         Weight = Mathf.Max(0, Weight);
-
-        // 다음 프레임을 위해 현재 위치 저장
-        LPast = LCurrent;
-        RPast = RCurrent;
-        PlayerPositionPreviousFrame = PlayerPositionThisFrame;
     }
 
     // 비선형 필터링 함수 G(x) = e^(-filterStrength * x^2)
@@ -274,7 +380,11 @@ public class SwingingArmMotion : MonoBehaviour
         return Mathf.Exp(-filterStrength * x * x);
     }
     
+    //============================================================
+    // <summary>
     // 애니메이션 상태 업데이트 함수
+    // </summary>
+    //============================================================
     private void UpdateAnimationState(MovementState newState)
     {
         // 새 상태 활성화
@@ -300,11 +410,18 @@ public class SwingingArmMotion : MonoBehaviour
             // 상태가 변경되면 애니메이터를 강제로 업데이트
             characterAnimator.Update(Time.deltaTime);
         }
-        Debug.Log("newState : " + newState + "Weight : " + Weight);
+
+        Debug.Log("New State : " + newState + "Weight : " + Weight);
+
         // 현재 상태 업데이트
         currentState = newState;
     }
 
+    //============================================================
+    // <summary>
+    // IK 솔버 활성화/비활성화 설정
+    // </summary>
+    //============================================================
     public void SetMoving(bool value)
     {
         if (value != IsMoving)
