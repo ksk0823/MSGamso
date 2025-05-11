@@ -307,15 +307,7 @@ public class SwingingArmMotion : MonoBehaviour
 
         float Move = DifL + DifR;
         
-        // 움직임이 없으면 Weight 빠르게 감소
-        if (Move < minThreshold)
-        {
-            Weight -= normalSubtraction * 3f * Time.deltaTime; // 더 빠르게 감소
-        }
-        else
-        {
-            Weight += Move;
-        }
+        Weight += Move;
 
         // 최대 Weight 제한
         Weight = Mathf.Min(Weight, 1f);
