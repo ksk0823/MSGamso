@@ -18,6 +18,7 @@ public class SwingingArmMotion : MonoBehaviour
     private bool isStabilized = false;
 
     [Header("이동 관련 변수")]
+    [SerializeField] private float MaxWeight;
     [SerializeField] private float Weight = 0f;
     [SerializeField] private float baseSpeed;
 
@@ -33,6 +34,12 @@ public class SwingingArmMotion : MonoBehaviour
 
     [Header("비선형 함수 G(x)의 계수")]
     [SerializeField] private float filterStrength;
+
+    // 움직임 정지 감지 변수
+    private float accumulatedMovement = 0f;
+    private float movementCheckTime = 0f;
+    private const float MOVEMENT_CHECK_DURATION = 0.25f;
+    private const float MIN_MOVEMENT_THRESHOLD = 0.05f;
 
     private CharacterController characterController;
 
@@ -296,21 +303,39 @@ public class SwingingArmMotion : MonoBehaviour
     private void UpdateWeight(float DifL, float DifR)
     {
         // 최소 움직임 임계값 적용 - 임계값 증가
-        float minThreshold = minHandMovementThreshold * 2f; // 더 높은 임계값 적용
-        DifL = DifL > minThreshold ? DifL : 0;
-        DifR = DifR > minThreshold ? DifR : 0;
+        DifL = DifL > minHandMovementThreshold ? DifL : 0;
+        DifR = DifR > minHandMovementThreshold ? DifR : 0;
 
         // 플레이어 자체 이동량을 보정
+        /*
         float playerMovement = Vector3.Distance(PlayerPositionPreviousFrame, PlayerPositionThisFrame);
         DifL = Mathf.Max(0, DifL - playerMovement);
         DifR = Mathf.Max(0, DifR - playerMovement);
-
+        */
         float Move = DifL + DifR;
         
         Weight += Move;
 
+        // 움직임 정지 감지 로직
+        accumulatedMovement += Move;
+        movementCheckTime += Time.deltaTime;
+        
+        if (movementCheckTime >= MOVEMENT_CHECK_DURATION)
+        {
+            // 0.25초 동안 누적 움직임이 임계값 이하면 정지로 판단
+            if (accumulatedMovement <= MIN_MOVEMENT_THRESHOLD)
+            {
+                Debug.Log("정지 판단");
+                Weight = 0f;
+            }
+            
+            // 측정 변수 초기화
+            accumulatedMovement = 0f;
+            movementCheckTime = 0f;
+        }
+
         // 최대 Weight 제한
-        Weight = Mathf.Min(Weight, 1f);
+        Weight = Mathf.Min(Weight, MaxWeight);
     }
 
     //============================================================
