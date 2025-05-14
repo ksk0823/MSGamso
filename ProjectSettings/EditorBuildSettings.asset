@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EndingScene.unity
     guid: ee1cb3bbdc210c94cb063785b91426c9
+  - enabled: 1
+    path: Assets/Scenes/MirrorScene.unity
+    guid: 76d003a10a31aff4cacb18fee9f9aeaf
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 2ba1316e9eb63a64793d28ed91b31658, type: 2}
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: dc5a169419fa04987b057f65238cf3ba, type: 2}
