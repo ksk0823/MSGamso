@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="87e00e6b-4338-4e21-acf3-c58b2329c170" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MSGamso/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MSGamso/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/PoseChecker/PoseChecker.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PoseChecker/PoseChecker.renderTexture" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/PoseChecker/WallChecker.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PoseChecker/WallChecker.renderTexture" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/DecoScene/MazeScene 2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/DecoScene/MazeScene 2.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/DecoScene/MirrorScene 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/DecoScene/MirrorScene 1.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/MirrorScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MirrorScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/XR/Settings/OpenXR Package Settings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/XR/Settings/OpenXR Package Settings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +108,7 @@
       <workItem from="1733810110777" duration="1395000" />
       <workItem from="1733811605450" duration="1740000" />
       <workItem from="1740713176462" duration="1027000" />
-      <workItem from="1747222672212" duration="1615000" />
+      <workItem from="1747222672212" duration="2208000" />
     </task>
     <servers />
   </component>
