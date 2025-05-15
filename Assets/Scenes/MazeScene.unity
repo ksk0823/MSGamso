@@ -4153,6 +4153,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 256387358673005798, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.308
+      objectReference: {fileID: 0}
+    - target: {fileID: 256387358673005798, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.439
+      objectReference: {fileID: 0}
     - target: {fileID: 332196747322677001, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
       propertyPath: m_PlayOnAwake
       value: 0
@@ -4732,6 +4740,14 @@ PrefabInstance:
     - target: {fileID: 8282760856615327554, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
       propertyPath: m_PlayOnAwake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8493976650562579629, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.308
+      objectReference: {fileID: 0}
+    - target: {fileID: 8493976650562579629, guid: f2c320baee2f11743bf2e4eb9b24dd56, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.439
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16759,7 +16775,6 @@ MonoBehaviour:
   Walls:
   - {fileID: 7907170743549549601, guid: 3b1c7d9d44d52134ea544cd8b4b351cd, type: 3}
   - {fileID: 5596489461717251907, guid: 89af6f08562ddf44198c96593b28e9c0, type: 3}
-  - {fileID: 6781674878156021433, guid: ede59ecd06f258f40a7a51627ef897ee, type: 3}
   - {fileID: 1869042942022467669, guid: 8c7a3d36062c5ff409b1867f64332b66, type: 3}
   - {fileID: 3599614121204924826, guid: 663beb9ea8afe32408f8a05e7809d4bc, type: 3}
   SpawnPosition: {fileID: 425667890}
