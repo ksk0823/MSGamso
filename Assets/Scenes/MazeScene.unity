@@ -1713,6 +1713,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 905139119}
+  Teleport: 1
+  MoveLock: 1
   locked: 0
 --- !u!1001 &110791188
 PrefabInstance:
@@ -23992,6 +23994,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 905139119}
+  Teleport: 0
+  MoveLock: 0
   locked: 0
 --- !u!1001 &1208996430
 PrefabInstance:

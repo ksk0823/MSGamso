@@ -39,7 +39,7 @@ public class SwingingArmMotion : MonoBehaviour
     // 움직임 정지 감지 변수
     private float accumulatedMovement = 0f;
     private float movementCheckTime = 0f;
-    private const float MOVEMENT_CHECK_DURATION = 0.35f;
+    private const float MOVEMENT_CHECK_DURATION = 0.3f;
     private const float MIN_MOVEMENT_THRESHOLD = 0.03f;
 
     private CharacterController characterController;
@@ -54,7 +54,7 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private string walkAnimParam = "isWalking";
     [SerializeField] private string runAnimParam = "isRunning";
     [SerializeField] private int lowerBodyLayer = 1; // 하체 애니메이션 레이어 인덱스
-
+    
 #region 이동 관련 상태 변수
     
     // 이전 프레임의 위치 저장
@@ -319,7 +319,7 @@ public class SwingingArmMotion : MonoBehaviour
         DifR = Mathf.Max(0, DifR - playerMovement);
         */
         float Move = DifL + DifR;
-        Move *= 2.5f;
+        Move *= 2f;
         Weight += Move;
 
         // 움직임 정지 감지 로직
@@ -351,6 +351,7 @@ public class SwingingArmMotion : MonoBehaviour
     //============================================================
     private void ApplyMovementBasedOnWeight()
     {
+        ForwardDirection = CenterEyeCamera;
         // 상태 판별 및 이동
         if (Weight > runThreshold)
         {
