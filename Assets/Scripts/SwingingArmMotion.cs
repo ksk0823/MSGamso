@@ -22,6 +22,7 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private float Weight = 0f;
     [SerializeField] private float baseSpeed;
 
+
     [Header("상태 판별 임계값")]
     [SerializeField] private float walkThreshold;
     [SerializeField] private float runThreshold;
@@ -38,8 +39,8 @@ public class SwingingArmMotion : MonoBehaviour
     // 움직임 정지 감지 변수
     private float accumulatedMovement = 0f;
     private float movementCheckTime = 0f;
-    private const float MOVEMENT_CHECK_DURATION = 0.25f;
-    private const float MIN_MOVEMENT_THRESHOLD = 0.05f;
+    private const float MOVEMENT_CHECK_DURATION = 0.35f;
+    private const float MIN_MOVEMENT_THRESHOLD = 0.03f;
 
     private CharacterController characterController;
 
@@ -202,15 +203,20 @@ public class SwingingArmMotion : MonoBehaviour
     private void CalculateMovementAndUpdateWeight()
     {
         // 1. 어깨와 루트로 평면 생성 (RP)
-        Vector3 RPN = CalculateReferentialPlaneNormal();
+        var (RPN, up) = CalculateReferentialPlaneNormal();
 
         // 팔의 방향 벡터 계산 및 이동 방향 업데이트
         UpdateMovement(Current.L, Current.R);
 
+        Vector3 l = Vector3.ProjectOnPlane(Direction.L, up).normalized;
+        Vector3 r = Vector3.ProjectOnPlane(Direction.R, up).normalized;
+        
+        //벡터분해
         // 4. 비선형 필터링 값 계산 G(sin(θ))
-        float LF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, Direction.L) * Mathf.Deg2Rad));
-        float RF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, Direction.R) * Mathf.Deg2Rad));
+        float LF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, l) * Mathf.Deg2Rad));
+        float RF = NonLinearFilter(Mathf.Sin(Vector3.Angle(RPN, r) * Mathf.Deg2Rad));
 
+        
         // 5. 이동량 계산
         float DifL = Vector3.Distance(LPast, Current.L) * LF;
         float DifR = Vector3.Distance(RPast, Current.R) * RF;
@@ -223,12 +229,12 @@ public class SwingingArmMotion : MonoBehaviour
     // 어깨와 루트로 기준면의 법선 벡터 계산
     // </summary>
     //============================================================
-    private Vector3 CalculateReferentialPlaneNormal()
+    private (Vector3 rpn, Vector3 up) CalculateReferentialPlaneNormal()
     {
         Vector3 rightShoulderToRoot = rightShoulder.position - rootJoint.position;
         Vector3 leftShoulderToRoot = leftShoulder.position - rootJoint.position;
 
-        return Vector3.Cross(rightShoulderToRoot, leftShoulderToRoot).normalized;
+        return (Vector3.Cross(rightShoulderToRoot, leftShoulderToRoot).normalized, (rightShoulderToRoot + leftShoulderToRoot).normalized);
     }
 
     //============================================================
@@ -313,7 +319,7 @@ public class SwingingArmMotion : MonoBehaviour
         DifR = Mathf.Max(0, DifR - playerMovement);
         */
         float Move = DifL + DifR;
-        
+        Move *= 2.5f;
         Weight += Move;
 
         // 움직임 정지 감지 로직

@@ -814,6 +814,7 @@ MonoBehaviour:
   rightShoulder: {fileID: 0}
   rootJoint: {fileID: 0}
   stabilizationTime: 1
+  MaxWeight: 0
   Weight: 0
   baseSpeed: 8
   walkThreshold: 0.2

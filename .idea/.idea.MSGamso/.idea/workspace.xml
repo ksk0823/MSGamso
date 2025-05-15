@@ -5,7 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="87e00e6b-4338-4e21-acf3-c58b2329c170" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MSGamso/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MSGamso/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/wall/wall1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/wall/wall1.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/wall/wall2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/wall/wall2.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/wall/wall3.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/wall/wall3.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/wall/wall4.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/wall/wall4.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/wall/wall5.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/wall/wall5.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/플레이어.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/플레이어.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/MazeScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MazeScene.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/MirrorScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MirrorScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SwingingArmMotion.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SwingingArmMotion.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +37,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "KSKtemp",
+    "git-widget-placeholder": "Lee",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -109,6 +118,7 @@
       <workItem from="1733811605450" duration="1740000" />
       <workItem from="1740713176462" duration="1027000" />
       <workItem from="1747222672212" duration="2208000" />
+      <workItem from="1747295640085" duration="6322000" />
     </task>
     <servers />
   </component>

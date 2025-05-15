@@ -5,6 +5,8 @@ using UnityEngine;
 public class TargetLocker : MonoBehaviour
 {
     public GameObject target;
+    public bool Teleport = true;
+    public bool MoveLock = true;
     
     private SwingingArmMotion armMotion;
     
@@ -18,8 +20,11 @@ public class TargetLocker : MonoBehaviour
     public void Lock()
     {
         locked = true;
+        
+        if (MoveLock)
         armMotion.enabled = false;
         
+        if (Teleport)
         target.transform.position = transform.position;
     }
 
