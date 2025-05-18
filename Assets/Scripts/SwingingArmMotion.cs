@@ -22,6 +22,9 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private float Weight = 0f;
     [SerializeField] private float baseSpeed;
 
+    [Header("방향 스무딩")]
+    [SerializeField] private float directionSmoothSpeed = 5f;
+    private Vector3 smoothedDirection;
 
     [Header("상태 판별 임계값")]
     [SerializeField] private float walkThreshold;
@@ -108,6 +111,15 @@ public class SwingingArmMotion : MonoBehaviour
         stabilizationTimer = 0f;
 
         isStabilized = false;
+        
+        // 초기 방향 설정
+        if (CenterEyeCamera != null)
+        {
+            Vector3 initialDirection = CenterEyeCamera.transform.forward;
+            initialDirection.y = 0;
+            initialDirection.Normalize();
+            smoothedDirection = initialDirection;
+        }
     }
 
     private void FixedUpdate()
@@ -186,13 +198,30 @@ public class SwingingArmMotion : MonoBehaviour
 
     //============================================================
     // <summary>
-    // 카메라 방향을 기반으로 이동 방향 업데이트
+    // 카메라 방향을 기반으로 이동 방향 업데이트 (부드러운 전환 적용)
     // </summary>
     //============================================================
     private void UpdateForwardDirection()
     {
-        float yRotation = CenterEyeCamera.transform.eulerAngles.y;
-        ForwardDirection.transform.eulerAngles = new Vector3(0, yRotation, 0);
+        if (CenterEyeCamera != null)
+        {
+            // 카메라의 현재 전방 방향 (수평만 사용)
+            Vector3 targetDirection = CenterEyeCamera.transform.forward;
+            targetDirection.y = 0;
+            
+            // 방향 벡터가 너무 작지 않은지 확인
+            if (targetDirection.magnitude > 0.01f)
+            {
+                targetDirection.Normalize();
+                
+                // 스무딩 적용 (Lerp)
+                smoothedDirection = Vector3.Lerp(smoothedDirection, targetDirection, Time.deltaTime * directionSmoothSpeed);
+                smoothedDirection.Normalize();
+                
+                // ForwardDirection 게임오브젝트 방향 설정
+                ForwardDirection.transform.forward = smoothedDirection;
+            }
+        }
     }
 
     //============================================================
@@ -204,9 +233,6 @@ public class SwingingArmMotion : MonoBehaviour
     {
         // 1. 어깨와 루트로 평면 생성 (RP)
         var (RPN, up) = CalculateReferentialPlaneNormal();
-
-        // 팔의 방향 벡터 계산 및 이동 방향 업데이트
-        UpdateMovement(Current.L, Current.R);
 
         Vector3 l = Vector3.ProjectOnPlane(Direction.L, up).normalized;
         Vector3 r = Vector3.ProjectOnPlane(Direction.R, up).normalized;
@@ -239,70 +265,6 @@ public class SwingingArmMotion : MonoBehaviour
 
     //============================================================
     // <summary>
-    // 이동 방향 업데이트
-    // </summary>
-    //============================================================
-    private void UpdateMovement(Vector3 LCurrent, Vector3 RCurrent)
-    {
-        // 팔의 방향 벡터 계산
-        Vector3 armDirection = (Direction.L + Direction.R).normalized;
-
-        // 원래 팔 방향 저장 (수직 성분 포함)
-        Vector3 originalArmDirection = armDirection;
-        
-        // XZ 평면에 정사영 (Y축 성분을 완전히 제거하고 재정규화)
-        armDirection.y = 0;
-        
-        // 정규화 전에 벡터가 영벡터인지 체크
-        if (armDirection.magnitude > 0.01f)
-        {
-            armDirection.Normalize();
-            
-            // 카메라 방향의 수평 성분 구하기
-            Vector3 cameraForward = ForwardDirection.transform.forward;
-            cameraForward.y = 0;
-            cameraForward.Normalize();
-            
-            // 카메라와 팔 방향의 내적으로 앞/뒤 판단
-            float dotProduct = Vector3.Dot(cameraForward, armDirection);
-            
-            Vector3 finalDirection;
-            
-            // 팔 방향이 카메라 앞쪽 방향(90도 이내)인 경우에만 팔 방향 반영
-            if (dotProduct > 0)
-            {
-                // 팔 방향만 사용 (카메라 방향과의 혼합 제거)
-                finalDirection = armDirection;
-            }
-            else
-            {
-                // 팔 방향이 카메라의 뒤쪽을 향하면 원래 팔 방향의 XZ 성분 방향 반전
-                finalDirection = -armDirection;
-            }
-            
-            // 이동 방향 벡터 저장 (항상 수평 유지)
-            finalDirection.y = 0;
-            finalDirection.Normalize();
-            ForwardDirection.transform.forward = finalDirection;
-        }
-        else
-        {
-            // 팔 방향이 거의 수직인 경우, 원래 팔 방향에서 Y성분만 약화시키고 사용
-            Vector3 modifiedDirection = originalArmDirection;
-            // Y성분 약화 (완전히 제거하지 않음)
-            modifiedDirection.y *= 0.2f;
-            
-            // 벡터 정규화
-            if (modifiedDirection.magnitude > 0.01f)
-            {
-                modifiedDirection.Normalize();
-                ForwardDirection.transform.forward = modifiedDirection;
-            }
-        }
-    }
-
-    //============================================================
-    // <summary>
     // Weight 값 업데이트
     // </summary>
     //============================================================
@@ -312,12 +274,6 @@ public class SwingingArmMotion : MonoBehaviour
         DifL = DifL > minHandMovementThreshold ? DifL : 0;
         DifR = DifR > minHandMovementThreshold ? DifR : 0;
 
-        // 플레이어 자체 이동량을 보정
-        /*
-        float playerMovement = Vector3.Distance(PlayerPositionPreviousFrame, PlayerPositionThisFrame);
-        DifL = Mathf.Max(0, DifL - playerMovement);
-        DifR = Mathf.Max(0, DifR - playerMovement);
-        */
         float Move = DifL + DifR;
         Move *= 2f;
         Weight += Move;
@@ -351,7 +307,6 @@ public class SwingingArmMotion : MonoBehaviour
     //============================================================
     private void ApplyMovementBasedOnWeight()
     {
-        ForwardDirection = CenterEyeCamera;
         // 상태 판별 및 이동
         if (Weight > runThreshold)
         {

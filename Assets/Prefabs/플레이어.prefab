@@ -657,7 +657,7 @@ PrefabInstance:
       objectReference: {fileID: 1444701069749180501}
     - target: {fileID: 2181691625970136927, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: walkThreshold
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 2181691625970136927, guid: e9bec4fa9fce40c4184a3ed049a36781, type: 3}
       propertyPath: filterStrength
