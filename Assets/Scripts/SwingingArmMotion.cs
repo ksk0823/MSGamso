@@ -42,7 +42,7 @@ public class SwingingArmMotion : MonoBehaviour
     // 움직임 정지 감지 변수
     private float accumulatedMovement = 0f;
     private float movementCheckTime = 0f;
-    private const float MOVEMENT_CHECK_DURATION = 0.3f;
+    private const float MOVEMENT_CHECK_DURATION = 0.25f;
     private const float MIN_MOVEMENT_THRESHOLD = 0.03f;
 
     private CharacterController characterController;
@@ -275,7 +275,6 @@ public class SwingingArmMotion : MonoBehaviour
         DifR = DifR > minHandMovementThreshold ? DifR : 0;
 
         float Move = DifL + DifR;
-        Move *= 2f;
         Weight += Move;
 
         // 움직임 정지 감지 로직

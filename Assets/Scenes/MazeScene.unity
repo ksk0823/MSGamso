@@ -4426,7 +4426,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3314933195692988228, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
       propertyPath: head.trackingPositionOffset.z
-      value: 0
+      value: -0.15
       objectReference: {fileID: 0}
     - target: {fileID: 3314933195692988228, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
       propertyPath: leftHand.trackingPositionOffset.z
@@ -4457,8 +4457,20 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
+      propertyPath: MaxWeight
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
+      propertyPath: baseSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
+      propertyPath: runThreshold
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3956030759202695629, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
       propertyPath: m_Layer
@@ -18401,7 +18413,6 @@ MonoBehaviour:
   Walls:
   - {fileID: 7907170743549549601, guid: 3b1c7d9d44d52134ea544cd8b4b351cd, type: 3}
   - {fileID: 5596489461717251907, guid: 89af6f08562ddf44198c96593b28e9c0, type: 3}
-  - {fileID: 6781674878156021433, guid: ede59ecd06f258f40a7a51627ef897ee, type: 3}
   - {fileID: 1869042942022467669, guid: 8c7a3d36062c5ff409b1867f64332b66, type: 3}
   - {fileID: 3599614121204924826, guid: 663beb9ea8afe32408f8a05e7809d4bc, type: 3}
   SpawnPosition: {fileID: 425667890}
@@ -27123,7 +27134,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4611731981530281300, guid: 64decc221d727114aa9b0b32c1396a0e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 38.5
+      value: 39.5
       objectReference: {fileID: 0}
     - target: {fileID: 4611731981530281300, guid: 64decc221d727114aa9b0b32c1396a0e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -33455,7 +33466,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1493422255
 RectTransform:
   m_ObjectHideFlags: 0
