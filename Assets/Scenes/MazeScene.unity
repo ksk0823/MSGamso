@@ -4472,6 +4472,14 @@ PrefabInstance:
       propertyPath: runThreshold
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
+      propertyPath: filterStrength
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
+      propertyPath: minHandMovementThreshold
+      value: 0.03
+      objectReference: {fileID: 0}
     - target: {fileID: 3956030759202695629, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
       propertyPath: m_Layer
       value: 6

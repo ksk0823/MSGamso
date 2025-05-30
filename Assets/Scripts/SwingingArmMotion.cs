@@ -275,6 +275,7 @@ public class SwingingArmMotion : MonoBehaviour
         DifR = DifR > minHandMovementThreshold ? DifR : 0;
 
         float Move = DifL + DifR;
+        Move *= 1.2f;
         Weight += Move;
 
         // 움직임 정지 감지 로직
