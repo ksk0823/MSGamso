@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68d0a78efd94f3e48bbf902660672e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  catchSound: {fileID: 8300000, guid: 63764d90fce44274aaf34df99a6e842e, type: 3}
+  particle: {fileID: 0}
 --- !u!54 &3741711001585606453
 Rigidbody:
   m_ObjectHideFlags: 0
