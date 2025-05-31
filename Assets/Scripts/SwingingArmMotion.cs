@@ -26,6 +26,14 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private float directionSmoothSpeed = 5f;
     private Vector3 smoothedDirection;
 
+    [Header("회전 속도에 따른 이동속도 감소")]
+    [SerializeField] private float rotationSpeedDamping = 2f; // 회전 속도 감쇠 계수
+    [SerializeField] private float maxRotationSpeedThreshold = 180f; // 최대 회전 속도 임계값 (도/초)
+    [SerializeField] private float minSpeedMultiplier = 0.1f; // 최소 속도 배율
+    private Quaternion previousRotation;
+    private float currentRotationSpeed = 0f;
+    private float rotationSpeedMultiplier = 1f;
+
     [Header("상태 판별 임계값")]
     [SerializeField] private float walkThreshold;
     [SerializeField] private float runThreshold;
@@ -77,6 +85,9 @@ public class SwingingArmMotion : MonoBehaviour
         (Current.L - leftShoulder.position).normalized, (Current.R - rightShoulder.position).normalized
     );
 
+    [Header("캐릭터 회전")]
+    [SerializeField] private float rotationDelta = 10f;
+
 #endregion
 
     // 현재 이동 상태
@@ -119,6 +130,9 @@ public class SwingingArmMotion : MonoBehaviour
             initialDirection.y = 0;
             initialDirection.Normalize();
             smoothedDirection = initialDirection;
+            
+            // 회전 관련 초기화
+            previousRotation = CenterEyeCamera.transform.rotation;
         }
     }
 
@@ -129,6 +143,9 @@ public class SwingingArmMotion : MonoBehaviour
         {
             return;
         }
+        
+        // 회전 속도 계산
+        CalculateRotationSpeed();
         
         // 카메라 방향에 따라 이동 방향 조정
         UpdateForwardDirection();
@@ -194,6 +211,33 @@ public class SwingingArmMotion : MonoBehaviour
         }
 
         return true;
+    }
+
+    //============================================================
+    // <summary>
+    // 회전 속도 계산 및 이동속도 배율 조정
+    // </summary>
+    //============================================================
+    private void CalculateRotationSpeed()
+    {
+        if (CenterEyeCamera != null)
+        {
+            // 현재 회전과 이전 회전 사이의 각도 차이 계산
+            Quaternion currentRotation = CenterEyeCamera.transform.rotation;
+            float angleDifference = Quaternion.Angle(previousRotation, currentRotation);
+            
+            // 각속도 계산 (도/초)
+            currentRotationSpeed = angleDifference / Time.deltaTime;
+            
+            // 회전 속도에 따른 이동속도 배율 계산
+            // 회전 속도가 클수록 이동속도가 줄어듦
+            float normalizedRotationSpeed = Mathf.Clamp01(currentRotationSpeed / maxRotationSpeedThreshold);
+            float dampingFactor = normalizedRotationSpeed * rotationSpeedDamping;
+            rotationSpeedMultiplier = Mathf.Lerp(1f, minSpeedMultiplier, dampingFactor);
+            
+            // 이전 회전 업데이트
+            previousRotation = currentRotation;
+        }
     }
 
     //============================================================
@@ -310,8 +354,9 @@ public class SwingingArmMotion : MonoBehaviour
         // 상태 판별 및 이동
         if (Weight > runThreshold)
         {
-            // 뛰기 상태
-            characterController.Move(ForwardDirection.transform.forward * Weight * baseSpeed * Time.deltaTime);
+            // 뛰기 상태 - 회전 속도 배율 적용
+            Vector3 moveVector = ForwardDirection.transform.forward * Weight * baseSpeed * rotationSpeedMultiplier * Time.deltaTime;
+            characterController.Move(moveVector);
             UpdateAnimationState(MovementState.Running);
             
             // IK 비활성화 (다리는 애니메이션만으로 제어)
@@ -321,8 +366,9 @@ public class SwingingArmMotion : MonoBehaviour
         }
         else if (Weight >= walkThreshold)
         {
-            // 걷기 상태
-            characterController.Move(ForwardDirection.transform.forward * Weight * baseSpeed * Time.deltaTime);
+            // 걷기 상태 - 회전 속도 배율 적용
+            Vector3 moveVector = ForwardDirection.transform.forward * Weight * baseSpeed * rotationSpeedMultiplier * Time.deltaTime;
+            characterController.Move(moveVector);
             UpdateAnimationState(MovementState.Walking);
             
             // IK 비활성화 (다리는 애니메이션만으로 제어)
