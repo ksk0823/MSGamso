@@ -817,6 +817,7 @@ MonoBehaviour:
   MaxWeight: 0
   Weight: 0
   baseSpeed: 8
+  directionSmoothSpeed: 5
   walkThreshold: 0.2
   runThreshold: 0.5
   minHandMovementThreshold: 0.05

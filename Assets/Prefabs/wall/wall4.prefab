@@ -73,6 +73,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29d974ae5560f9b42911edae872df9b4, type: 3}
       insertIndex: -1
       addedObject: {fileID: -1791643650737143614}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29d974ae5560f9b42911edae872df9b4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5513314581569725697}
   m_SourcePrefab: {fileID: 100100000, guid: 29d974ae5560f9b42911edae872df9b4, type: 3}
 --- !u!1 &1869042942022467669 stripped
 GameObject:
@@ -141,3 +144,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.019999998, y: 0.019999996, z: 0.019999996}
   m_Center: {x: 0, y: 0, z: 0.009999998}
+--- !u!114 &5513314581569725697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869042942022467669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9711188db0726b649869a0e524bc1f7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WallRenderTexture: {fileID: 8400000, guid: 2473160627115684f95e54793794af2e, type: 2}
+  PoseRenderTexture: {fileID: 8400000, guid: 32d077a3de48fbc4cb0ec55b987368be, type: 2}

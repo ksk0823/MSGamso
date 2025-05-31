@@ -6,6 +6,8 @@ using UnityEngine;
 
 public partial class PuzzleMiniGame : MiniGame
 {
+    public float FailedPenaltyTime = 5f;
+
     public delegate void OnSequenceChangedEvent(Sequence sequence);
     
     public event OnSequenceChangedEvent OnSequenceChanged;
@@ -65,6 +67,8 @@ public partial class PuzzleMiniGame : MiniGame
 
     private void OnSequenceFailed()
     {
+        GameManager.Instance.GameTime += FailedPenaltyTime;
+
         // 실패 시에 해당 레벨 재시작
         SetLevel(CurrentLevel);
     }

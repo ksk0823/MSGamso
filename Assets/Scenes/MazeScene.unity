@@ -18328,6 +18328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 818161450}
   - component: {fileID: 818161451}
+  - component: {fileID: 818161452}
   m_Layer: 0
   m_Name: PoseGame
   m_TagString: BlockGlass
@@ -18424,6 +18425,20 @@ MonoBehaviour:
   - {fileID: 1869042942022467669, guid: 8c7a3d36062c5ff409b1867f64332b66, type: 3}
   - {fileID: 3599614121204924826, guid: 663beb9ea8afe32408f8a05e7809d4bc, type: 3}
   SpawnPosition: {fileID: 425667890}
+--- !u!114 &818161452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818161449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9711188db0726b649869a0e524bc1f7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WallRenderTexture: {fileID: 8400000, guid: 2473160627115684f95e54793794af2e, type: 2}
+  PoseRenderTexture: {fileID: 8400000, guid: 32d077a3de48fbc4cb0ec55b987368be, type: 2}
 --- !u!1001 &821241034
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30956,8 +30971,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83e4e6cca11330d4088d729ab4fc9d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_StartingHoverFilters: []
-  m_StartingSelectFilters: []
 --- !u!4 &1385537404
 Transform:
   m_ObjectHideFlags: 0
