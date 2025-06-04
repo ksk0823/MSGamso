@@ -71303,6 +71303,10 @@ PrefabInstance:
       value: -0.15
       objectReference: {fileID: 0}
     - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
+      propertyPath: speedSmoothTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860602620906555246, guid: 27576de3597fad94785bf48cfa8019eb, type: 3}
       propertyPath: minRotationAngleThreshold
       value: 5
       objectReference: {fileID: 0}

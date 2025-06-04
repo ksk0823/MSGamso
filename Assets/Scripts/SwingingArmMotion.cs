@@ -103,8 +103,6 @@ public class SwingingArmMotion : MonoBehaviour
         (Current.L - leftShoulder.position).normalized, (Current.R - rightShoulder.position).normalized
     );
 
-    [Header("캐릭터 회전")]
-    [SerializeField] private float rotationDelta = 10f;
 
 #endregion
 

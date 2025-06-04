@@ -53,6 +53,7 @@ public class CatchGame : MiniGame
             butterfly.OnCaught += () =>
             {
                 score += 1;
+                Debug.Log("score: " + score);
             };
 
             butterflyList.Add(butterfly);
