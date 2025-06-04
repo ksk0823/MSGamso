@@ -22,6 +22,17 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private float Weight = 0f;
     [SerializeField] private float baseSpeed;
 
+    [Header("구간별 고정 속도 설정")]
+    [SerializeField] private float walkLowSpeed = 1.0f;    // 0.05 ~ 0.3 구간
+    [SerializeField] private float walkHighSpeed = 2.0f;   // 0.3 ~ 0.5 구간
+    [SerializeField] private float runLowSpeed = 3.5f;     // 0.5 ~ 0.7 구간
+    [SerializeField] private float runHighSpeed = 5.0f;    // 0.7 이상 구간
+    
+    [Header("속도 스무딩")]
+    [SerializeField] private float speedSmoothTime = 0.3f; // 속도 변화 스무딩 시간
+    private float currentSpeed = 0f;                       // 현재 적용 중인 속도
+    private float targetSpeed = 0f;                        // 목표 속도
+
     [Header("방향 스무딩")]
     [SerializeField] private float directionSmoothSpeed = 5f;
     private Vector3 smoothedDirection;
@@ -30,6 +41,7 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private float rotationSpeedDamping = 2f; // 회전 속도 감쇠 계수
     [SerializeField] private float maxRotationSpeedThreshold = 180f; // 최대 회전 속도 임계값 (도/초)
     [SerializeField] private float minSpeedMultiplier = 0.1f; // 최소 속도 배율
+    [SerializeField] private float minRotationAngleThreshold = 5f; // 최소 회전 각도 임계값 (도)
     private Quaternion previousRotation;
     private float currentRotationSpeed = 0f;
     private float rotationSpeedMultiplier = 1f;
@@ -38,6 +50,12 @@ public class SwingingArmMotion : MonoBehaviour
     [SerializeField] private float walkThreshold;
     [SerializeField] private float runThreshold;
     [SerializeField] private float minHandMovementThreshold;
+
+    [Header("구간별 임계값")]
+    [SerializeField] private float walkLowThreshold = 0.05f;  // Walk Low 시작점
+    [SerializeField] private float walkHighThreshold = 0.3f;  // Walk High 시작점
+    [SerializeField] private float runLowThreshold = 0.5f;    // Run Low 시작점  
+    [SerializeField] private float runHighThreshold = 0.7f;   // Run High 시작점
 
     [Header("Weight 감소값")]
     [SerializeField] private float normalSubtraction;
@@ -91,7 +109,7 @@ public class SwingingArmMotion : MonoBehaviour
 #endregion
 
     // 현재 이동 상태
-    private enum MovementState { Idle, Walking, Running }
+    private enum MovementState { Idle, WalkLow, WalkHigh, RunLow, RunHigh }
     private MovementState currentState = MovementState.Idle;
 
     public bool IsMoving {get; private set;} = false;
@@ -226,6 +244,15 @@ public class SwingingArmMotion : MonoBehaviour
             Quaternion currentRotation = CenterEyeCamera.transform.rotation;
             float angleDifference = Quaternion.Angle(previousRotation, currentRotation);
             
+            // 최소 회전 각도 임계값 확인
+            if (angleDifference < minRotationAngleThreshold)
+            {
+                // 임계값보다 작은 회전은 무시
+                currentRotationSpeed = 0f;
+                rotationSpeedMultiplier = 1f; // 회전이 없으므로 속도 배율을 원래대로
+                return;
+            }
+            
             // 각속도 계산 (도/초)
             currentRotationSpeed = angleDifference / Time.deltaTime;
             
@@ -351,36 +378,61 @@ public class SwingingArmMotion : MonoBehaviour
     //============================================================
     private void ApplyMovementBasedOnWeight()
     {
-        // 상태 판별 및 이동
-        if (Weight > runThreshold)
+        // 1. Weight에 따른 상태 및 목표 속도 결정
+        MovementState newState;
+        
+        if (Weight >= runHighThreshold)
         {
-            // 뛰기 상태 - 회전 속도 배율 적용
-            Vector3 moveVector = ForwardDirection.transform.forward * Weight * baseSpeed * rotationSpeedMultiplier * Time.deltaTime;
-            characterController.Move(moveVector);
-            UpdateAnimationState(MovementState.Running);
-            
-            // IK 비활성화 (다리는 애니메이션만으로 제어)
-            SetMoving(false);
-            
-            Weight -= runSubtraction * Time.deltaTime;
+            newState = MovementState.RunHigh;
+            targetSpeed = runHighSpeed;
         }
-        else if (Weight >= walkThreshold)
+        else if (Weight >= runLowThreshold)
         {
-            // 걷기 상태 - 회전 속도 배율 적용
-            Vector3 moveVector = ForwardDirection.transform.forward * Weight * baseSpeed * rotationSpeedMultiplier * Time.deltaTime;
-            characterController.Move(moveVector);
-            UpdateAnimationState(MovementState.Walking);
-            
-            // IK 비활성화 (다리는 애니메이션만으로 제어)
-            SetMoving(false);
-            
-            Weight -= walkSubtraction * Time.deltaTime;
+            newState = MovementState.RunLow;
+            targetSpeed = runLowSpeed;
+        }
+        else if (Weight >= walkHighThreshold)
+        {
+            newState = MovementState.WalkHigh;
+            targetSpeed = walkHighSpeed;
+        }
+        else if (Weight >= walkLowThreshold)
+        {
+            newState = MovementState.WalkLow;
+            targetSpeed = walkLowSpeed;
         }
         else
         {
-            // 기본 상태 (정지)
-            UpdateAnimationState(MovementState.Idle);
+            newState = MovementState.Idle;
+            targetSpeed = 0f;
+        }
+        
+        // 2. 속도 스무딩 적용
+        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime / speedSmoothTime);
+        
+        // 3. 상태별 처리
+        if (newState != MovementState.Idle)
+        {
+            // 이동 적용 - 회전 속도 배율과 스무딩된 속도 사용
+            Vector3 moveVector = ForwardDirection.transform.forward * currentSpeed * rotationSpeedMultiplier * Time.deltaTime;
+            characterController.Move(moveVector);
             
+            // IK 비활성화 (다리는 애니메이션만으로 제어)
+            SetMoving(false);
+            
+            // Weight 감소 (상태별 차등 적용)
+            if (newState == MovementState.RunHigh || newState == MovementState.RunLow)
+            {
+                Weight -= runSubtraction * Time.deltaTime;
+            }
+            else // Walk 상태들
+            {
+                Weight -= walkSubtraction * Time.deltaTime;
+            }
+        }
+        else
+        {
+            // Idle 상태
             // IK 활성화 (다리 IK 제어)
             SetMoving(true);
             
@@ -397,6 +449,9 @@ public class SwingingArmMotion : MonoBehaviour
 
         // Weight가 음수가 되지 않도록 조정
         Weight = Mathf.Max(0, Weight);
+        
+        // 애니메이션 상태 업데이트
+        UpdateAnimationState(newState);
     }
 
     // 비선형 필터링 함수 G(x) = e^(-filterStrength * x^2)
@@ -415,11 +470,19 @@ public class SwingingArmMotion : MonoBehaviour
         // 새 상태 활성화
         switch(newState)
         {
-            case MovementState.Walking:
+            case MovementState.WalkLow:
                 characterAnimator.SetBool(walkAnimParam, true);
                 characterAnimator.SetBool(runAnimParam, false);
                 break;
-            case MovementState.Running:
+            case MovementState.WalkHigh:
+                characterAnimator.SetBool(walkAnimParam, true);
+                characterAnimator.SetBool(runAnimParam, false);
+                break;
+            case MovementState.RunLow:
+                characterAnimator.SetBool(walkAnimParam, false);
+                characterAnimator.SetBool(runAnimParam, true);
+                break;
+            case MovementState.RunHigh:
                 characterAnimator.SetBool(walkAnimParam, false);
                 characterAnimator.SetBool(runAnimParam, true);
                 break;
