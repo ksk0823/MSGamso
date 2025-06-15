@@ -7012,10 +7012,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 258643047}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7f62958495a5434eae82916472bab18, type: 3}
+  m_Script: {fileID: 11500000, guid: 522d6efe84b33cf46a0608e6606e0e02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: EndingScene
 --- !u!1001 &260548235
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31082,8 +31081,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83e4e6cca11330d4088d729ab4fc9d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_StartingHoverFilters: []
-  m_StartingSelectFilters: []
 --- !u!4 &1385537404
 Transform:
   m_ObjectHideFlags: 0
@@ -38112,6 +38109,7 @@ GameObject:
   - component: {fileID: 1687927877}
   - component: {fileID: 1687927876}
   - component: {fileID: 1687927878}
+  - component: {fileID: 1687927879}
   m_Layer: 0
   m_Name: "\uAC8C\uC784 \uB9E4\uB2C8\uC800"
   m_TagString: Untagged
@@ -38165,6 +38163,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MiniGame: {fileID: 306144316}
+--- !u!114 &1687927879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687927875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f62958495a5434eae82916472bab18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneName: EndingScene
+  LoadOnTrigger: 0
 --- !u!1001 &1690001864
 PrefabInstance:
   m_ObjectHideFlags: 0

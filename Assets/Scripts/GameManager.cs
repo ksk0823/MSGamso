@@ -9,6 +9,9 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoSingleton<GameManager>
 {
+
+    public int Score { get; private set; } = 0;
+
     /// <summary>
     /// 실행 가능한 미니게임 목록입니다.
     /// </summary>
@@ -48,15 +51,24 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public float GameTime;
 
+    private LoadScene loadScene;
+
     protected override void Awake()
     {
-
+        loadScene = GetComponent<LoadScene>();
+    
+        OnGameCleared += () =>
+        {
+            loadScene.Load();
+        };
     }
 
     private void Update()
     {
         if(State.Running == CurrentState)
             GameTime += Time.deltaTime;
+
+        Debug.Log($"Score: {CalculateScore()}");
     }
 
     private void SetState(State state)
@@ -91,7 +103,6 @@ public class GameManager : MonoSingleton<GameManager>
     public void Stop()
     {
         SetState(State.Done);
-
     }
 
     #endregion
@@ -104,6 +115,10 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public void SetGameCleared()
     {
+        Score = CalculateScore();
+
+        PlayerPrefs.SetInt("Score", Score);
+
         Stop();
 
         OnGameCleared?.Invoke();
@@ -117,6 +132,24 @@ public class GameManager : MonoSingleton<GameManager>
         Stop();
 
         OnGameFailed?.Invoke();
+    }
+
+    public int CalculateScore()
+    {
+        double l = 1000000, r = 550000;
+
+        double a = 800, x = GameTime;
+
+        if (0f <= x && x <= a)
+        {
+            double p = 1 / a * x;
+
+            return (int)((l - r) * (p * p * (2 * p - 3) + 1) + r);
+        }
+        else
+        {
+            return x < 0 ? (int)l : (int)r;
+        }
     }
 
     #endregion

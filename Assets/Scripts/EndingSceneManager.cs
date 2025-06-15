@@ -7,6 +7,7 @@ public class EndingSceneManager : MonoBehaviour
 {
     public TextMeshPro scoreText;
 
+    /*
     [System.Serializable]
     public class GameData
     {
@@ -35,5 +36,12 @@ public class EndingSceneManager : MonoBehaviour
         {
             scoreText.text = "No Data";
         }
+    }
+    */
+
+    public void Start()
+    {
+        int score = PlayerPrefs.GetInt("Score");
+        scoreText.text = $"Score\n{score}";
     }
 }
